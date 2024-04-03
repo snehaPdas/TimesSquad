@@ -2,6 +2,7 @@ const Category = require("../Models/categorySchema");
 const Product = require("../Models/productSchema");
 const fs = require("fs");
 const path = require("path");
+const sharp=require("sharp")
 
 const getProductadd = async (req, res) => {
   try {
@@ -18,14 +19,38 @@ const addProducts = async (req, res, err) => {
     const productExists = await Product.findOne({
       productName: { $regex: new RegExp(products.productName, "i") },
     });
+    
     if (!productExists) {
       const images = [];
-      if (req.files && req.files.length > 0) {
-        for (let i = 0; i < req.files.length; i++) {
-          images.push(req.files[i].filename);
+      
+      // if (req.files && req.files.length>0) {
+      //   for (let i = 0; i < req.files.length; i++) {
+      //     images.push(req.files[i].filename);
+      //   }
+      // }
+
+
+      if(req.files && req.files.length>0){
+        for(let i=0;i<req.files.length;i++){
+          const file=req.files[i]
+          const croppedFilename=`cropped_${file.filename}`
+          const inputPath = file.path;
+          const outputPath = path.join(
+            __dirname,
+            "../public/uploads/product-images",
+            croppedFilename
+          );
+          console.log(inputPath);
+          console.log(outputPath);
+          await cropAndReplaceOriginal(inputPath, outputPath);
+          images.push(croppedFilename);
+
         }
       }
+      
 
+
+      
       const newProduct = new Product({
         // id: Date.now(),
         productName: products.productName,
@@ -38,9 +63,9 @@ const addProducts = async (req, res, err) => {
         //color: products.color,
         productImage: images,
       });
+      
       await newProduct.save();
-
-      res.redirect("/admin/products");
+     res.redirect("/admin/products");
       // res.json("success")
     } else {
       const category = await Category.find({});
@@ -56,6 +81,43 @@ const addProducts = async (req, res, err) => {
     console.log("addproduct error", error.message);
   }
 };
+
+const cropAndReplaceOriginal = (inputPath, outputPath) => {
+  return new Promise((resolve, reject) => {
+    sharp(inputPath)
+      .extract({ left: 200, top: 200, width: 200, height: 200 })
+      .toFile(outputPath, async (err, info) => {
+        if (err) {
+          console.error(err);
+          reject("Error cropping image");
+        } else {
+          try {
+            console.log("Original image deleted successfully");
+            resolve(outputPath);
+          } catch (error) {
+            console.error("Error deleting original image:", error);
+            reject("Error deleting original image");
+          }
+        }
+      });
+
+      setTimeout(()=>{
+        fs.promises.unlink(inputPath)
+      .then(() => {
+        console.log("Original image deleted successfully");
+      })
+      .catch((unlinkError) => {
+        console.error("Error deleting original image:", unlinkError);
+      });
+      },4000)
+  });
+};
+
+
+
+
+
+
 
 const getAllProducts = async (req, res) => {
   try {
@@ -109,7 +171,8 @@ const getEditProduct = async (req, res) => {
     const id = req.query.id;
     const products = await Product.findOne({ _id: id });
     const category = await Category.find({});
-    res.render("admin/productedit", { product: products, cat: category });
+    
+    res.render("admin/productedit", { product: products, cat: category});
   } catch (error) {}
 };
 

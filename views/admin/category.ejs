@@ -201,7 +201,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-3">
-                    <form method="post" action="/admin/addcategory" onsubmit="return validateForm()" >
+                    <form method="post" action="/admin/category" onsubmit="return validateForm()" >
                           <div class="mb-4">
                             <label for="product_name" class="form-label">Name</label>
                             <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name" />
@@ -228,7 +228,7 @@
                                     </th>
                                     <th>Name</th>
                                     <th>Description</th>
-                                    <th>Status</th>
+                                    <!-- <th>Status</th> -->
                                     <th>List/Unlist</th>
                                     <th class="text-start">Edit</th>
                                 </tr>
@@ -265,6 +265,28 @@
             </div> 
         </div> 
     </div> 
+
+    <div class="container mt-3">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mb-20" style="margin-right: 200px;">
+            
+                
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                    </li>
+                <% } %>
+        
+                
+        
+            </ul>
+        </nav>
+        </div>
+
+
+
+
+
 </section> 
 <script>
    function validateForm() {
@@ -277,7 +299,8 @@
    
 
     // Define a regular expression for validating the name (no numbers or blank spaces)
-    var nameRegex = /^[a-zA-Z]+$/;
+    var nameRegex = /^[a-zA-Z]+(?:[^\S\r\n]+[a-zA-Z]+)*$/
+
 
     // Get the elements for displaying error messages
     var nameError = document.getElementById('nameError');

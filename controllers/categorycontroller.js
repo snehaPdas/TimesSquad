@@ -4,22 +4,29 @@ const Category=require("../Models/categorySchema")
 const getCategory=async(req,res)=>{
     
     try {
-        const categoryData=await Category.find({})
+        const page=req.query.page||1
+        const Limit=2
+        const CategoryData=await Category.find({})
+            .limit(Limit)
+            .skip((page-1)*Limit)
+            .exec()
+            const count=await Category.countDocuments({})
+            const totalPages=Math.ceil(count/Limit)
 
-        res.render("admin/category", { catdata: categoryData })
 
+        res.render("admin/category", { catdata: CategoryData,totalPages,currentPage:page })
     } catch (error) {
         console.log(error.message)
-        // res.status(500).send("Internal Server Error");
+        res.status(500).send("Internal Server Error");
         
     }
 }
 
+
 const addCategory=async(req,res)=>{
     try {
-        console.log("10")
         const {name,description}=req.body
-        const categoryExist = await Category.findOne({ name: { $regex: new RegExp(`^${name}$`, 'i') } });
+        const categoryExist = await Category.findOne({ name });
 
         if (description && description.trim() !== "") {
             if(!categoryExist){
@@ -31,9 +38,17 @@ const addCategory=async(req,res)=>{
                res.redirect(302,"/admin/category")
 
             }else{
+                const Limit=2;
+                const page=req.query.page||1
                 const category=await Category.find({})
+                .limit(Limit)
+                .skip((page-1)*Limit)
+                .exec()
+                const count=await Category.countDocuments({})
+                const totalPages=Math.ceil(count/Limit)
 
-                res.render("admin/category",{catdata:category,message:"category already exist"})
+
+                res.render("admin/category",{catdata:category,message:"category already exist",totalPages,currentPage:page})
                 console.log("category alread exist")
             }
         }else{
@@ -47,16 +62,23 @@ const addCategory=async(req,res)=>{
     }
 }
 
-const getAllCategory=async (req,res)=>{
-    try {
-        console.log("50")
-        const categoryData =await Category.find({})
-        res.render("admin/category", { catdata: categoryData })
-        console.log("correct")
-    } catch (error) {
-        console.log(error.message)
-    }
-}
+// const getAllCategory=async (req,res)=>{
+//     try {
+//         const page=req.query.page||1
+//         const Limit=2
+//         const CategoryData=await Category.find({})
+//             .limit(Limit)
+//             .skip((page-1)*Limit)
+//             .exec()
+//             const count=await Category.countDocuments()
+//             const totalPages=Math.ceil(count/Limit)
+
+
+//         res.render("admin/category", { catdata: CategoryData,totalPages,currentPage:page })
+//     } catch (error) {
+//         console.log(error.message)
+//     }
+// }
 
 const getListedCategory=async(req,res)=>{
     try {
@@ -124,7 +146,7 @@ const getLogout = async (req, res) => {
 module.exports={
     getCategory,
     addCategory,
-    getAllCategory,
+    //getAllCategory,
     getListedCategory,
     getUnlistedCategory,
     getEditCategory,

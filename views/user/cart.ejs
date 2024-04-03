@@ -89,7 +89,7 @@
                                           <% } else { %>
                                             <!-- Displayed when the user is not logged in -->
                                             <div class="single-mobile-header-info ml-25 pr-5">
-                                              <a href="/login">Sign Up</a>
+                                              <a href="/login">Login</a>
                                             </div>
                                           <% } %>
                                            </div>
@@ -128,8 +128,9 @@
                                         </thead>
                                         <tbody>
                                             
+                                            
                                           <%  if (userCart && userCart.items.length>0 ) { %>
-                                          <% userCart.items.forEach(item => { %>
+                                                    <% userCart.items.forEach(item => { %>
 
                                                            <tr>
                                                             <td class="image product-thumbnail">
@@ -165,52 +166,26 @@
                                                               <td class="text-center" data-title="Stock">
                                                                         <div class="detail-qty border radius m-auto">
                                                                             <div class="quantity-control">
-        
-        
-                                                                                
-        
-                                                                                
-                                                                                <!-- Increment button -->
+                                                                       <!-- Increment button -->
                                                                                 <button class="btn btn-sm increment-button" onclick="changeQuantity('<%= item.product._id %>', '1',event)">+</button>
-
-                                                                                <input class="quantity-input"
-                                                                                id="cartProductQuantity<%= item.product.id %>"
-                                                                                value="<%= item.quantity %>"
-                                                                                style="width: 45px;" type="text" readonly
-                                                                                value="">
-    
-
+                                                                                <input class="quantity-input" id="cartProductQuantity<%= item.product.id %>" value="<%= item.quantity %>" style="width: 45px;" type="text" readonly value="">
                                                                                 <button class="btn btn-sm decrement-button" onclick="changeQuantity('<%= item.product._id %>', '-1',event)">-</button>
-                                                                                                  </div>
-                                                                    </td>
-        
-        
-        
-        
-        
-                                                                    <td class="action" data-title="Remove">
-                                                                        <a class="btn btn-sm remove-button" data-product-id="<%= item.product._id %>">
+                                                                                </div>
+                                                                                </td>
+                                                                               <td class="action" data-title="Remove">
+                                                                              <a class="btn btn-sm remove-button" data-product-id="<%= item.product._id %>">
                                                                             <i class="fi-rs-trash"></i>
                                                                         </a>
                                                                     </td>
-                                                                    
-        
-        
                                                                     <% }) %>
                                                                     <% } else { %>
-                                                                    
-                                                                        
-                                                        <tr>
+                                                                    <tr>
                                                                 <td colspan="2" class="text-center"><br>
                                                                 <p class="lead mb-4">No item found in Cart</p>
-                                                            </td>
-        
-        
-                                                        </tr>
+                                                            </td> </tr>
                                                         <% } %>
                                                     <input type="hidden" name="" id="totalabc" value="">
-        
-                                        </tbody>
+                                                </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -342,14 +317,12 @@
 <!-- .....................................increment/decrement quantity................................ -->
 
 <script>
-    async function changeQuantity(productId, action, event) {
+
+async function changeQuantity(productId, action,event) {
         
         try {
-            // Prevent the default behavior of the button click
             event.preventDefault();
-            
-
-            const response = await $.ajax({
+             const response = await $.ajax({
                 type: 'POST',
                 url: '/changeQuantity',
                 data: {
@@ -359,57 +332,49 @@
                 dataType: 'json'
             });
              
-            
-            
-            // Handle success response
             if (response.status) {
-                
-                // Update UI with the new quantity
 
-                
-                $(`#quantity-${productId}`).text(response.updatedCart.items[0].quantity);
-            $(`#cartProductQuantity${productId}`).val(response.updatedCart.items[0].quantity);
-
+        //  $(`#quantity-${productId}`).text(response.updatedCart.items[0].quantity);
+        
+    
+    
+        // $(`#cartProductQuantity${productId}`).val(response.updatedCart.items[0].quantity);
             
 
-            // Update the price and total price if available in your UI
-            // $(`#priceElement`).text(response.updatedCart.items[0].product.salePrice);
-            // $(`#totalPriceElement`).text(response.updatedCart.totalPrice);
-               response.updatedCart.items.forEach(item => {
-                const subtotalElement = $(`#subTotal${item.product._id}`);
-                const newSubtotal = item.product.salePrice * item.quantity;
+        //        response.updatedCart.items.forEach(item => {
+        //         const subtotalElement = $(`#subTotal${item.product._id}`);
+        //         const newSubtotal = item.product.salePrice * item.quantity;
+        //         subtotalElement.text(newSubtotal);
+
+        const updatedItem = response.updatedCart.items.find(item => item.product._id === productId);
+            if (updatedItem) {
+                // Update quantity input field
+                $(`#cartProductQuantity${productId}`).val(updatedItem.quantity);
+                
+                // Update subtotal for the specific product
+                const subtotalElement = $(`#subTotal${productId}`);
+                const newSubtotal = updatedItem.product.salePrice * updatedItem.quantity;
                 subtotalElement.text(newSubtotal);
-
-                $('#total').text(response.updatedCart.totalPrice);
-
+            }
 
 
-            });
+
+               $('#total').text(response.updatedCart.totalPrice);
+                // });
                 // Display success message
                 Swal.fire({
                     title: 'Success',
                     text: response.message,
                     icon: 'success'
                 });
-
-             alert("sucesss"+response.message)
-
-            } else {
-
-                
-            
-
-                alert("123")
-                Swal.fire({
+              } else {
+              Swal.fire({
                 title: 'Error',
                 text: response.message ||'An error occurred while changing the quantity.',
                 icon: 'error'
             });
             }
         } catch (error) {
-            // Handle AJAX request error
-            
-
             Swal.fire({
                 title: 'Error',
                 text: 'Quantity limit reached',

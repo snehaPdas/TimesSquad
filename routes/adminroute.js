@@ -9,8 +9,11 @@ const customerController=require("../controllers/customercontroller")
 const categoryController=require("../controllers/categorycontroller")
 const productController=require("../controllers/productcontroller")
 const orderController=require("../controllers/orderController")
+// const cropAndReplaceOriginal=require("../Helpers/crop")
+
 
 const { isAdmin } = require("../Helpers/middleware")
+
 
 
 
@@ -32,8 +35,8 @@ route.get("/unblockCustomer", isAdmin, customerController.getCustomerUnblocked)
 //category
 
 route.get("/category",isAdmin,categoryController.getCategory)
-route.post("/addcategory",isAdmin,categoryController.addCategory)
-route.get("/allcategory",isAdmin,categoryController.getAllCategory)
+route.post("/category",isAdmin,categoryController.addCategory)
+//route.get("/allcategory",isAdmin,categoryController.getAllCategory)
 route.get("/listedcategory",isAdmin,categoryController.getListedCategory)
 route.get("/unlistedcategory",isAdmin,categoryController.getUnlistedCategory)
 route.get("/editcategory",isAdmin,categoryController.getEditCategory)
@@ -65,6 +68,11 @@ route.get("/logout", isAdmin, productController.getLogout)
 route.get("/orderList",isAdmin,orderController.getOrderListPageAdmin)
 route.get("/orderDetailsAdmin",isAdmin,orderController.getOrderDetailsPageAdmin)
 route.get("/changeStatus",isAdmin,orderController.changeOrderStatus)
+route.get("/cancelOrderAdmin",isAdmin,orderController.cancelOrderAdmin)
+
+//image crop
+// route.post("/crop",isAdmin,upload.array("images",5),cropAndReplaceOriginal.cropAndReplaceOriginal)
+
 
 
 

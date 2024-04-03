@@ -32,7 +32,7 @@ totalQuantity:{
 },
 totalPrice:{
     type:Number,
-   // required:true
+   required:true
 }
 },
 {

@@ -22,6 +22,28 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> <!-- Add jQuery library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        .alphabet-button {
+          background-color: #D2B48C; 
+          border: none;
+          color: white;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          margin: 4px 2px;
+          cursor: pointer;
+          border-radius: 10px;
+          transition-duration: 0.4s;
+        }
+      
+        .alphabet-button:hover {
+          background-color: #45a049; /* Darker Green */
+        }
+      </style>
+      
     </head>
 
 <body>
@@ -41,31 +63,20 @@
                                 <li><a href="/shop">Shop</i></a>
                                    
                                 </li>
-                                <!-- <li>
-                                    <a href="page-contact.html">Contact</a>
-                                </li> -->
-                            </ul>
+                                </ul>
                         </nav>
                     </div>
                     <div class="header-action-right" style="padding-left: 300px;">
                         <div class="header-action-2">
                             <div class="header-action-icon-2">
-                               
-                             </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-            </div>
+             </div>
         </div>
            
-        
-
-
-
-
-
-
+    
          <div class="header-middle header-middle-ptb-1 d-none d-lg-block">
                 <div class="container">
                     <div class="header-wrap">
@@ -83,20 +94,20 @@
                                     <div class="header-action-icon-2">
                                         <a href="/wishlist">
                                             <img class="svgInject" alt="Evara" src="/user-assets/imgs/theme/icons/icon-heart.svg">
-                                            <!-- <span class="pro-count blue">4</span> -->
+                                            
                                         </a>
                                     </div>
                                     <div class="header-action-icon-2">
                                         <a class="mini-cart-icon" href="/cart">
                                             <img alt="Evara" src="/user-assets/imgs/theme/icons/icon-cart.svg">
-                                            <!-- <span class="pro-count blue">2</span> -->
+                                        
                                         </a>
                                         <% if (locals.user) { %>
-                                            <!-- Displayed when the user is logged in -->
+                                            
                                             <li class="dropdown nav-item">
                                               <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false">
-                                                <!-- Uncomment the following line if you want to use an icon -->
-                                                <!-- <i class="fas fa-/user-circle"></i> -->
+                                                
+                                                
                                                 <img class="svgInject" alt="Evara" src="/user-assets/imgs/theme/icons/user-profile.svg" style="height: 25px; width: 25px; margin-top: 2px;">
                                               </a>
                                               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
@@ -106,9 +117,9 @@
                                               </div>
                                             </li>
                                           <% } else { %>
-                                            <!-- Displayed when the user is not logged in -->
+                                            
                                             <div class="single-mobile-header-info ml-25 pr-5">
-                                              <a href="/login">Sign Up</a>
+                                              <a href="/login">Login</a>
                                             </div>
                                           <% } %>
                                     </div>
@@ -126,7 +137,7 @@
 }
 
 .btn {
-  /* Add your button styling here */
+  
   margin: 0 5px;
   padding: 5px 10px;
   background-color: #f0f0f0;
@@ -136,27 +147,26 @@
 }
 
 .active {
-  /* Add styles for the active page */
  
   color: #fff;
 }
 
 .btn:hover {
-  /* Add styles for button hover state */
+
   background-color: #ddd;
 }
 
 
 .price-filter-inner {
         display: flex;
-        justify-content: space-between; /* Adjust as needed */
+        justify-content: space-between; 
     }
 
     .price-button {
         flex: 1;
-        height: 40px; /* Adjust the height as needed */
-        width: 100%; /* Fill the container width */
-        margin-right: 5px; /* Adjust the margin between buttons as needed */
+        height: 40px; 
+        width: 100%; 
+        margin-right: 5px; 
         border: 1px solid #ddd;
     }
 </style>
@@ -228,11 +238,11 @@
                         
                    <% } %>
                   </div>
-                <% if (totalPages) { %>
+                 <% if (totalPages) { %>
                     <div class="pagination">
                       <% if (currentPage > 1) { %>
                         <button class="btn btn-sm"><a href="/shop?page=<%= currentPage - 1 %>">Previous</a></button>
-                      <% } %>
+                      <% } %> 
                   
                       <% for (let i = 1; i <= totalPages; i++) { %> 
                         <button class="btn btn-sm <%= i === currentPage ? 'active' : '' %>">
@@ -244,7 +254,7 @@
                         <button class="btn btn-sm"><a href="/shop?page=<%= currentPage + 1 %>">Next</a></button>
                       <% } %>
                     </div>
-                  <% } %>
+                  <% } %> 
             </div>
             <div class="col-lg-3 primary-sidebar sticky-sidebar"> 
                 <div class="widget-category mb-30">
@@ -257,34 +267,46 @@
                     </ul>
                 </div>
                  <div class="widget-category mb-30"> 
-
-                
-
-
-                    
-                <!-- </div> -->
+               <!-- </div> -->
                 <!-- Fillter By Price -->
                 <div class="sidebar-widget price_range range mb-30">
                     <div class="widget-header position-relative mb-20 pb-10">
-                        <h5 class="widget-title mb-10">Fill by price</h5>
+                        <h5 class="widget-title mb-10">Filter by price</h5>
                         <div class="bt-1 border-color-1"></div>
                     </div>
                     <div class="price-filter">
                         <div class="price-filter-inner">
                             <form id="price-filter-form">
                                 <div class="price-options">
-                                    <a href="/filterPrice?gt=0&lt=50000"><button type="button" class="price-button" data-value="under-50000">Under $50,000</button></a>
-                                    <a href="/filterPrice?gt=50000&lt=100000"><button type="button" class="price-button" data-value="50k-to-100k">$50,000 - $100,000</button></a>
-                                    <a href="/filterPrice?gt=100000&lt=150000"><button type="button" class="price-button" data-value="100k-to-150k">$100,000 - $150,000</button></a>
-                                    <a href="/filterPrice?gt=150000&lt=1000000"><button type="button" class="price-button" data-value="above-150k">Above $150,000</button></a>
+                                    <a href="/filterPrice?gt=0&lt=50000"><button type="button" class="price-button" data-value="under-50000">Under 50,000</button></a>
+                                    <a href="/filterPrice?gt=50000&lt=100000"><button type="button" class="price-button" data-value="50k-to-100k">50,000 - 100,000</button></a>
+                                    <a href="/filterPrice?gt=100000&lt=150000"><button type="button" class="price-button" data-value="100k-to-150k">100,000 - 150,000</button></a>
+                                    <a href="/filterPrice?gt=150000&lt=1000000"><button type="button" class="price-button" data-value="above-150k">Above 150,000</button></a>
                                     <input type="hidden" id="selected-price" name="selected-price" value="">
                                 </div>
+                                
                             </form>
                         </div>
                     </div>
                 </div>
              <!-- </div> -->
-            
+             <div class="sidebar-widget price_range range mb-30">
+                <div class="widget-header position-relative mb-20 pb-10">
+                    <h5 class="widget-title mb-10">Sort Alphabetically</h5>
+                    <div class="bt-1 border-color-1"></div>
+                </div>
+                <div class="price-filter">
+                    <div class="alphabet-filter-inner">
+                        <form id="alphabet-filter-form">
+                            <div class="alphabet-options">
+                                <a href="/filterAlphabetical?option=asc"><button type="button" class="alphabet-button" data-value="a-to-z">Aa to Zz</button></a>
+                                <a href="/filterAlphabetical?option=desc"><button type="button" class="alphabet-button" data-value="z-to-a">Zz to Aa</button></a>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
             
             
             
@@ -316,10 +338,10 @@ function handleSortChange(selectedOption) {
         return response.json();
     })
     .then(data => {
-        // Check if the response contains the expected data structure
+        
         if (data && data.status === true && data.data) {
             const sortedProducts = data.data.currentProduct;
-            // Update UI with sorted products
+    
             renderSortedProducts(sortedProducts);
         } else {
             throw new Error('Invalid response format');
@@ -327,17 +349,16 @@ function handleSortChange(selectedOption) {
     })
     .catch(error => {
         console.error('Error fetching sorted products:', error);
-        // Display error message to the user
+        
         showError('Failed to fetch sorted products. Please try again later.');
     });
 }
 
 function renderSortedProducts(products) {
-    // Clear existing product grid content
+    
     const productGrid = document.querySelector('.product-grid-3');
     productGrid.innerHTML = '';
 
-    // Render each product in the product grid
     products.forEach(product => {
         const productDiv = document.createElement('div');
         productDiv.classList.add('col-lg-4', 'col-md-4', 'col-12', 'col-sm-6');
@@ -360,7 +381,7 @@ function renderSortedProducts(products) {
     </div>
     <div class='product-content-wrap'>
         <div class='product-category'>
-            <a href='shop-grid-right.html'>${product.brand}</a>
+            <a href='shop-grid-right.html'></a>
         </div>
         <h2><a href='shop-product-right.html'>${product.productName}</a></h2>
         <div class='product-price'>
@@ -381,23 +402,10 @@ function renderSortedProducts(products) {
 }
 
 function showError(message) {
-    // Display error message to the user (e.g., in a div)
+
     const errorDiv = document.getElementById('error-message');
     errorDiv.textContent = message;
 }
-
-// document.addEventListener("DOMContentLoaded", function() {
-//     const alphabeticalButtons = document.querySelectorAll(".alphabetical-button");
-
-//     alphabeticalButtons.forEach(button => {
-//         button.addEventListener("click", function() {
-//             const order = this.getAttribute("data-order");
-//             const url = `/filterAlphabetical?order=${order}`;
-//             window.location.href = url;
-//         });
-//     });
-// });
-
 
 
 

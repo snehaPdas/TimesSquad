@@ -29,7 +29,7 @@ const verifylogin = async (req, res) => {
         res.redirect("/admin/login", { message: "Invalid Password" });
       }
     } else {
-      res.render("admin/adminlogin", { message: "Admin Not Found" });
+      res.render("admin/login", { message: "Admin Not Found" });
     }
   } catch (error) {
     console.log(error.message);

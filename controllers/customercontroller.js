@@ -16,13 +16,15 @@ const getCustomerData = async (req, res) => {
       .limit(limit)
       .skip((page - 1) * limit)
       .exec();
-    const count = await User.countDocuments(query);
+    const count = await User.countDocuments(query);         
     const totalPages = Math.ceil(count / limit);
+
     res.render("admin/customers", {
       data: userData,
       totalPages,
       currentPage: page,
     });
+    
   } catch (error) {
     console.log(error.message);
     res.status(500).send("server Error");
@@ -32,6 +34,7 @@ const getCustomerData = async (req, res) => {
 const getCustomerBlocked = async (req, res) => {
   try {
     let id = req.query.id;
+    
     const data = await User.updateOne(
       { _id: id },
       { $set: { isBlocked: true } }

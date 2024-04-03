@@ -177,6 +177,8 @@
                                     <option value="status">Status</option>
                                     <option value="Shipped">Shipped</option>
                                     <option value="Delivered">Delivered</option>
+                                    <option value="canceled">Cancelled</option>
+                                    
 
                                 </select>
                             <% } %>
@@ -255,10 +257,11 @@
                                     <thead>
                                         <tr class="text-center">
                                             <th>Product</th>
-                                            <th>Name</th>
+                                            <th>Product Name</th>
                                             <th>Price</th>
                                             <th>Quantity</th>
                                             <th class="text-center" width="20%" class="text-end">Total</th>
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -306,18 +309,11 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
- 
-
-<script>
-
-
+ <script>
 function handleDropdownChange(selectElement) {
-       
-    
        var selectedValue = selectElement.value;
-       alert(selectedValue)
-       if(selectedValue == "cancel"){
-           window.location.href = `/admin/changeStatus?orderId=${orderId.value}&status=${selectedValue}`;
+       if(selectedValue == "canceled"){
+          window.location.href = `/admin/cancelOrderAdmin?orderId=${orderId.value}&status=${selectedValue}`;
        }else if(selectedValue == "Shipped"){
            window.location.href = `/admin/changeStatus?orderId=${orderId.value}&status=${selectedValue}`;
        }else if(selectedValue == "Delivered"){
@@ -325,24 +321,15 @@ function handleDropdownChange(selectElement) {
        }else{
            alert("error")
        }
-
-
-   }
-
-
-
-  function performAction() {
-      // This function can be used for additional actions when the "Save" button is clicked
-      // You can add more logic here if needed
+     }
+function performAction() {
+    
   }
+
+
+
+
 </script>
-
-
-
-
-
-
-
 <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
 <script src="admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
 <script src="admin-assets/js/vendors/select2.min.js"></script>

@@ -172,11 +172,6 @@ const orderPlaced = async (req, res) => {
         if (!userCart || userCart.items.length === 0) {
             throw new Error("Cart is empty");
         }
-
-
-        // Check if userCart exists
-       
-
         // Extract releva
         const products = userCart.items.map(item => ({
             product: item.product,
@@ -212,6 +207,9 @@ const orderPlaced = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 };
+
+
+
 const getOrderDetailsPage = async (req, res) => {
     try {
         const userId = req.session.user
@@ -230,7 +228,7 @@ const getOrderDetailsPage = async (req, res) => {
 
 const cancelOrder=async(req,res)=>{
     try {
-        const userId=req.session.user
+        const userId=req.session.user 
         const findUser= await User.findOne({_id:userId})
         if(!findUser){
             return res.status(404).json({message:"user not found"})}
@@ -270,6 +268,55 @@ const cancelOrder=async(req,res)=>{
 
 
 
+
+
+const cancelOrderAdmin=async(req,res)=>{
+    try {
+        
+    const finUser=await User.findOne({
+        
+        isAdmin:1
+    })
+    if(!finUser){
+        return res.status(404).json({message:"user not found"})}
+        const orderId=req.query.orderId
+        const selectedValue=req.query.status
+        await Order.updateOne({ _id: orderId },
+            {$set: { orderStatus: selectedValue }}
+         ).then((data) => console.log("userchangeoption:",data))
+         const findOrder = await Order.findOne({ _id: orderId }).populate('products.product')
+        const pro=findOrder.products
+        console.log("jkkkk.........",pro)
+        for (const productData of findOrder.products) {
+            const productId = productData.product;
+            const quantity = productData.quantity;
+
+            const product = await Product.findById(productId)
+
+            if (product) {
+                product.quantity += quantity;
+                console.log("Updated quantity adminside.............................:", product.quantity);
+
+                await product.save();
+            }
+        }
+        res.redirect("/admin/orderList")
+
+        
+    } catch (error) {
+        console.log(error)
+    }
+    
+
+}
+
+
+
+
+
+
+
+
 const getOrderListPageAdmin=async(req,res)=>{
     try {
         const orders = await Order.find({}).sort({ createdAt: -1 }).populate({
@@ -282,7 +329,7 @@ const getOrderListPageAdmin=async(req,res)=>{
             order.createdOn = new Date(timestamp);
             
         });
-        let itemsPerPage = 3
+        let itemsPerPage = 5
         let currentPage = parseInt(req.query.page) || 1
         let startIndex = (currentPage - 1) * itemsPerPage
         let endIndex = startIndex + itemsPerPage
@@ -294,6 +341,9 @@ const getOrderListPageAdmin=async(req,res)=>{
         console.log(error.message);
     }
 }
+
+
+
 
 const getOrderDetailsPageAdmin=async(req,res)=>{
     try {   
@@ -316,7 +366,7 @@ const getOrderDetailsPageAdmin=async(req,res)=>{
 }
 
 const changeOrderStatus = async (req, res) => {
-    console.log("welcome")
+    
     try {
         console.log(req.query);
         const orderId = req.query.orderId
@@ -331,6 +381,13 @@ const changeOrderStatus = async (req, res) => {
       }
    }
 
+
+
+   
+
+
+
+
 module.exports={
     getCheckout,
     getCheckoutAddressEdit,
@@ -343,5 +400,6 @@ module.exports={
     getOrderDetailsPageAdmin,
     changeOrderStatus   ,
     getOrderDetailsPage  ,
-    cancelOrder  
+    cancelOrder  ,
+    cancelOrderAdmin
 }

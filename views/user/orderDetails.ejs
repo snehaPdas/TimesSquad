@@ -109,7 +109,7 @@
                                           <% } else { %>
                                             <!-- Displayed when the user is not logged in -->
                                             <div class="single-mobile-header-info ml-25 pr-5">
-                                              <a href="/login">Sign Up</a>
+                                              <a href="/login">Login</a>
                                             </div>
                                           <% } %>
                                     </div>
@@ -138,9 +138,9 @@
                                         <% if (orders.orderStatus !=="canceled" ) { %>
                                             <% if (orders.orderStatus==="Delivered" ) { %>
                                                 <div class="row">
-                                                    <div class="col-2" style="margin-right: 40px; ">
+                                                    <!-- <div class="col-2" style="margin-right: 40px; ">
                                                         <a class="btn custom-btn" id="print-button">Invoice</a>
-                                                    </div>
+                                                    </div> -->
                                                     <div class="col-2">
                                                         <a class="btn custom-btn"
                                                             href="http://localhost:3000/return?id=<%= orders._id%>">Return</a>
@@ -168,11 +168,9 @@
             
                                                                 </div>
                                                           </header>
-            
-            
-                        </div>
-                    </div>
-                    <div class="card-body">
+                                                         </div>
+                                                    </div>
+                                  <div class="card-body">
                         <div class="row mb-50 mt-20 order-info-wrap background-info">
                             <div class="col-md-4">
                                 <article class="icontext align-items-start ml-130">
@@ -216,10 +214,10 @@
                                                                                 <%}%>
                                                                              </p>
         
-                                    </div>
-                                </article>
-                            </div> <!-- col// -->
-                            <div class="col-md-4">
+                                                                       </div>
+                                                              </article>
+                                                     </div> <!-- col// -->
+                                     <div class="col-md-4">
                                 <article class="icontext align-items-start ml-130">
                                     <span class="icon icon-sm rounded-circle bg-primary-light">
                                         <i class="text-primary material-icons md-place"></i>
@@ -315,8 +313,6 @@
  <script>
      function handleDropdownChange(selectElement,orderId) {
     var selectedValue = selectElement.value;
-    alert(selectedValue)
-    alert(orderId)
    if (selectedValue === "canceled") {
    window.location.href = `/cancelOrder?orderId=${orderId}&selectedValue=${selectedValue}`;
 }

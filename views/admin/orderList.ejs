@@ -233,6 +233,28 @@
 
             </div>
             </div>
+
+
+            <% if (totalPages) { %>
+                <div class="pagination">
+                  <% if (currentPage > 1) { %>
+                    <button class="btn btn-sm"><a href="/admin/orderList?page=<%= currentPage - 1 %>">Previous</a></button>
+                  <% } %> 
+              
+                  <% for (let i = 1; i <= totalPages; i++) { %> 
+                    <button class="btn btn-sm <%= i === currentPage ? 'active' : '' %>">
+                      <a href="/admin/orderList?page=<%= i %>"><%= i %></a>
+                    </button>
+                  <% } %>
+              
+                  <% if (currentPage < totalPages) { %>
+                    <button class="btn btn-sm"><a href="/admin/orderList?page=<%= currentPage + 1 %>">Next</a></button>
+                  <% } %>
+                </div>
+              <% } %> 
+        </div>
+
+
 </section>
 <!-- ................................................footer................................................... -->
 <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>

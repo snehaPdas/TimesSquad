@@ -229,7 +229,6 @@ const getProductDetailsPage = async (req, res) => {
     console.log("100");
     const id = req.query.id;
     const findProduct = await Product.findOne({ _id: id });
-    console.log(id);
     const allProducts = await Product.find({ isBlocked: false })
       .sort({ id: -1 })
       .limit(4);
@@ -259,7 +258,7 @@ const getShopPage = async (req, res) => {
     // const brands = await Brand.find({})
     const categories = await Category.find({ isListed: true })
 
-    let itemsPerPage = 6;
+    let itemsPerPage = 9;
     let currentPage = parseInt(req.query.page) || 1;
     let startIndex = (currentPage - 1) * itemsPerPage;
     let endIndex = startIndex + itemsPerPage;
@@ -296,7 +295,7 @@ const searchProducts = async (req, res) => {
       isBlocked: false,
     }).lean();
 
-    let itemsPerPage = 6;
+    let itemsPerPage = 9;
     let currentPage = parseInt(req.query.page) || 1;
     let startIndex = (currentPage - 1) * itemsPerPage;
     let endIndex = startIndex + itemsPerPage;
@@ -319,7 +318,7 @@ const searchProducts = async (req, res) => {
 const filterByPrice = async (req, res) => {
   try {
     const user = req.session.user;
-    //const brands = await Brand.find({});
+    
     const categories = await Category.find({ isListed: true });
     
     const findProducts = await Product.find({
@@ -330,14 +329,15 @@ const filterByPrice = async (req, res) => {
       ],
     });
 
-    let itemsPerPage = 6;
+    let itemsPerPage = 9;
     let currentPage = parseInt(req.query.page) || 1;
     let startIndex = (currentPage - 1) * itemsPerPage;
     let endIndex = startIndex + itemsPerPage;
-    let totalPages = Math.ceil(findProducts.length / 6);
+    let totalPages = Math.ceil(findProducts.length / itemsPerPage);
     const currentProduct = findProducts.slice(startIndex, endIndex);
 
-    res.render("user/shop", {
+
+    res.render("User/shop", {
     user: user, 
       product: currentProduct,
        category: categories,
@@ -349,15 +349,47 @@ const filterByPrice = async (req, res) => {
   }
 };
 
+const filterByAlphabet = async (req, res) => {
+  try {
+    const user = req.session.user;
+    const option = req.query.option;
+    const category = await Category.find({ isListed: true });
+       let sortOption = 1; 
+        if (option === 'desc') {
+            sortOption = -1;
+        }
+const findProducts = await Product.find({isBlocked:false
+}).sort({ productName: sortOption });
+     let itemsPerPage = findProducts.length;
+    let currentPage = parseInt(req.query.page) ||1;
+    let totalItems = findProducts.length;
+    let startIndex = (currentPage - 1) * itemsPerPage;
+    let endIndex = startIndex + itemsPerPage;
+    let totalPages = Math.ceil(totalItems / itemsPerPage);
+  const  currentProduct = findProducts.slice(startIndex, endIndex);
+
+    res.render("User/shop", {
+      user: user,
+      product: currentProduct,
+      category: category,
+      totalPages,
+      currentPage:1
+    });
+  } catch (error) { 
+    console.log(error.message);
+    res.status(500).send("Internal Server Error: " + error.message);
+  }
+};
+
+
+
 
 const filterProduct = async (req, res) => {
   try {
       const user = req.session.user;
       const category = req.query.category;
       const brand = req.query.brand;
-      //const brands = await Brand.find({});
       const findCategory = category ? await Category.findOne({ _id: category }) : null;
-      // const findBrand = brand ? await Brand.findOne({ _id: brand }) : null;
 
       const query = {
           isBlocked: false,
@@ -366,15 +398,9 @@ const filterProduct = async (req, res) => {
       if (findCategory) {
           query.category = findCategory.name;
       }
-
-      // if (findBrand) {
-      //     query.brand = findBrand.brandName;
-      // }
-
       const findProducts = await Product.find(query);
       const categories = await Category.find({ isListed: true });
-
-      let itemsPerPage = 6;
+      let itemsPerPage = 9;
       let currentPage = parseInt(req.query.page) || 1;
       let startIndex = (currentPage - 1) * itemsPerPage;
       let endIndex = startIndex + itemsPerPage;
@@ -385,7 +411,7 @@ const filterProduct = async (req, res) => {
           user: user,
           product: currentProduct,
           category: categories,
-        //  brand: brands,
+
           totalPages,
           currentPage,
           selectedCategory: category || null,
@@ -406,7 +432,7 @@ const sortProduct = async (req, res) => {
   try {
     console.log("1")
       let option = req.body.option;
-      let itemsPerPage = 6;
+      let itemsPerPage = 9;
       let currentPage = parseInt(req.body.page) || 1;
       let startIndex = (currentPage - 1) * itemsPerPage;
       let endIndex = startIndex + itemsPerPage;
@@ -461,5 +487,6 @@ module.exports = {
   filterByPrice,
   sortProduct,
   filterProduct,
+  filterByAlphabet
   
 };

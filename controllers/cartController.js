@@ -10,12 +10,11 @@ const getCartPage = async (req, res) => {
     const userCart = await Cart.findOne({ user: userId }).populate(
       "items.product"
     );
-    console.log(userCart);
 
     if (userCart) {
       res.render("user/cart", { userCart });
     } else {
-      res.render("user/cart", { userCart: null });
+      res.render("user/cart", { userCart : '' });
     }
   } catch (error) {
     console.error(error);
@@ -26,6 +25,8 @@ const getCartPage = async (req, res) => {
 const addTocart = async (req, res) => {
   try {
     const productid = req.body.id;
+    
+   const qty=req.body.quantity
     console.log(req.body);
     const userId = req.session.user;
     const findUser = await User.findOne({ _id: userId });
@@ -45,8 +46,10 @@ const addTocart = async (req, res) => {
     const existingItemIndex = userCart.items.findIndex(
       (item) => item.product.toString() === productid
     );
-    let incomingQuantity = 1;
-
+  
+    let incomingQuantity = parseInt(qty);
+    console.log(incomingQuantity)
+        
     if (existingItemIndex >= 0) {
       const totalQuantityInCart =
         userCart.items[existingItemIndex].quantity + incomingQuantity;
@@ -69,8 +72,11 @@ const addTocart = async (req, res) => {
           product: productid,
           quantity: incomingQuantity,
           price: findproduct.salePrice * incomingQuantity,
+
+        
         });
-      } else {
+
+       } else {
         return res.status(200).json({
           status: "out of stock",
           message: "Product is out of stock.",
@@ -78,13 +84,9 @@ const addTocart = async (req, res) => {
       }
     }
     userCart.totalQuantity = userCart.items.reduce(
-      (total, item) => total + item.quantity,
-      0
-    );
-    userCart.totalPrice = userCart.items.reduce(
-      (total, item) => total + item.price,
-      0
-    );
+      (total, item) => total + item.quantity,0);
+    userCart.totalPrice = userCart.items.reduce((total, item) => total + item.price,0);
+    console.log("totalprice------------------", userCart.totalPrice)
 
     await userCart.save();
     return res.status(200).json({
@@ -97,6 +99,8 @@ const addTocart = async (req, res) => {
   }
 };
 
+
+
 const changeQuantity = async (req, res) => {
   try {
     const productId = req.body.id;
@@ -105,12 +109,8 @@ const changeQuantity = async (req, res) => {
 
     console.log("qua:", productId);
 
-    const userCart = await Cart.findOne({ user: userId }).populate(
-      "items.product"
-    );
-    const cartItem = userCart.items.find(
-      (item) => item.product._id.toString() === productId
-    );
+    const userCart = await Cart.findOne({ user: userId }).populate("items.product");
+    const cartItem = userCart.items.find((item) => item.product._id.toString() === productId);
 
     console.log("the usercartitem:", cartItem);
 
@@ -122,13 +122,11 @@ const changeQuantity = async (req, res) => {
 
     if (actionValue === 1) {
       if (cartItem.quantity < cartItem.product.quantity) {
-        console.log("2");
 
         cartItem.quantity += 1;
 
         // return res.status(200).json({status:true, message: 'Quantity Updated' });
       } else {
-        console.log("hi");
 
         return res
           .status(400)
@@ -170,6 +168,9 @@ const calculateTotalPrice = (cartItems) => {
   );
 };
 
+
+
+
 const deleteProduct = async (req, res) => {
   try {
     const productId = req.query.id;
@@ -180,7 +181,7 @@ const deleteProduct = async (req, res) => {
     if (!userCar) {
       return res.status(404).json({ message: "User's cart not found" });
     }
-    console.log(userCar);
+    
 
     const cartItemIndex = userCar.items.findIndex((item) => {
       console.log("Item ID:", item.product._id.toString());
@@ -191,7 +192,8 @@ const deleteProduct = async (req, res) => {
     const removedItem = userCar.items.splice(cartItemIndex, 1)[0];
 
     userCar.totalQuantity -= removedItem.quantity;
-    userCar.totalPrice -= removedItem.price * removedItem.quantity;
+    userCar.totalPrice -= removedItem.price 
+    // * removedItem.quantity;
     await userCar.save();
 
     res.redirect("/cart");
