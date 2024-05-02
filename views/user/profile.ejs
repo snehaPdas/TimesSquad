@@ -144,18 +144,18 @@
                                                 role="tab" aria-controls="orders" aria-selected="false"><i
                                                     class="fi-rs-shopping-bag mr-10"></i>Orders</a>
                                         </li>
-                                        <!-- <li class="nav-item">
+                                         <!-- <li class="nav-item">
                                             <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab"
                                                 href="#track-orders" role="tab" aria-controls="track-orders"
                                                 aria-selected="false"><i
                                                     class="fi-rs-shopping-cart-check mr-10"></i>Wallet Status</a>
                                         </li> -->
-                                        <!-- <li class="nav-item">
+                                        <li class="nav-item">
                                             <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab"
                                                 href="#wallet-history" role="tab" aria-controls="track-orders"
                                                 aria-selected="false"><i
                                                     class="fi-rs-shopping-cart-check mr-10"></i>Wallet History</a>
-                                        </li> -->
+                                        </li>
                                         <!-- <li class="nav-item">
                                             <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab"
                                                 href="#referal" role="tab" aria-controls="track-orders"
@@ -268,9 +268,101 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- -------------------------------wallet balance================ -->
+                        <!-- <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
+                            <div class="card" style="width: 300px;">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Wallet Balance(in ₹) </h5>
+                                </div>
+                                <div class="card-body contact-from-area">
+                                    <div class="row">
+                                        <div class="col-lg-8 mx-auto text-center mt-90">
+                                            <form>
+                                                <div class="form-group">
+                                                    <label for="walletAmount" class="h4" style="color: blue;">Wallet Amount:</label>
+                                                    <div class="h3" style="color: green; font-size: 20px;">₹</div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                        
 
 
- 
+
+
+ <!-- ...................................wallet history ------------------------------------------>
+                             <div class="tab-pane fade" id="wallet-history" role="tabpanel"
+                                        aria-labelledby="orders-tab">
+                                
+                                        
+                                        <div class="form-group">
+                                            <label for="walletAmount" class="h4">Wallet Amount:₹&nbsp;<%= user.wallet %></label>
+                                            
+                                        </div>
+                                        <div>
+                                        <button type="button" class="btn btn-success"
+                                        onclick="addMoney()">Add Money</button>
+                                        
+                                        </div><br>
+
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="mb-0">Wallet History</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Order/Return  Date</th>
+                                                                <th>Status</th>
+                                                                <th>Amount(in ₹)</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                            <% if (user.history) { %>
+
+                                                                <% for (let i=0; i < user.history.length; i++) { %>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <% const dateObject=(user.history[i].date
+                                                                                instanceof Date) ? user.history[i].date
+                                                                                : new Date(user.history[i].date); %>
+                                                                                <%= dateObject.toLocaleDateString() %>
+                                                                        </td>
+
+                                                                        <td>
+                                                                            <%= user.history[i].status %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <% if (user.history[i].status==="debit" ) {%>
+                                                                                <%= user.history[i].amount %>
+                                                                                    <% }else{ %>
+                                                                                        <%= user.history[i].amount %>
+                                                                                            <% } %>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <% } %>
+
+                                                                        <% }else{ %>
+
+                                                                            <td>No Orders found</td>
+
+                                                                            <% } %>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
 
 
 
@@ -346,7 +438,7 @@ aria-labelledby="address-tab">
                 aria-labelledby="account-detail-tab">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Account Details</h5>
+                        <h5>Account Details </h5>
                     </div>
                     <div class="card-body">
 
@@ -358,11 +450,18 @@ aria-labelledby="address-tab">
                                         class="form-control square" name="name" type="text">
                                 </div>
 
-                                <div class="form-group col-md-12">
+                                <div class="form-group col-md-6">
                                     <label>Mobile Number <span class="required">*</span></label>
                                     <input required="" value="<%= user.phone %>"
                                         class="form-control square" name="phone" type="text">
                                 </div>
+
+                                <div class="form-group col-md-6">
+                                    <label>New Password <span class="required">*</span></label>
+                                    <input value=""
+                                        class="form-control square" name="password" type="password">
+                                </div>
+
                                 <div class="col-md-12 mt-15">
                                     <button type="submit" class="btn btn-fill-out submit"
                                         name="submit" value="Submit">Save</button>
@@ -381,6 +480,93 @@ aria-labelledby="address-tab">
         </div>
         </div>
         </section>
+
+        <!-- ...................... -->
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script>
+       async function addMoney(){
+            const{
+                value:amount}=
+            await Swal.fire({
+                title:"Enter Amount",
+                input:"number",
+                inputLabel:"Amount",
+                inputPlaceholder:'₹'
+
+            })
+            
+            $.ajax({
+                
+                url:"/addmoney",
+                method:"post",
+                data:{
+                    total:amount
+                },
+                success:(data)=>{
+                    
+                    
+                    if(data.razorpay){
+                        var options = {
+        "key": "rzp_test_HEutcRuJKrbqL3",
+        "amount": data.order.amount,
+        "currency": "INR",
+        "name": "TimeSquad",
+        "description": "Transaction",
+        "image": "https://example.com/your_logo",
+        "order_id": data.order.id,
+        "handler": function (response) {
+            
+            verifyPayment(response, data);  
+
+        },
+        "prefill": {
+            "name": "User Name",
+            "email": "user@example.com",
+            "contact": "9999999999"
+        },
+        "theme": {
+            "color": "#FF00FF"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+}
+}})
+ }
+
+ function verifyPayment(response, order) {
+    
+
+$.ajax({
+    url: '/verify-payment',
+    method: 'post',
+    data: {
+        order,
+        response,
+        from: "wallet"
+    }, success: (response) => {
+        if (response) {
+            Swal.fire({
+                title: "Success",
+                text: "Payment has been succeed",
+                icon: "success",
+
+            }).then(function () {
+                location.reload()
+            });
+        } else {
+            Swal.fire("PAYMENT ERROR!", "Something wrong occured while processing the payment.", "error");
+            location.reload()
+        }
+
+    }
+})
+}
+
+    </script>
+    
+
+
   <!--footer.................. //////////////////////////////////////////////////////////////////////////////////////////// -->
 
   <section class="newsletter p-30 text-white wow fadeIn animated">

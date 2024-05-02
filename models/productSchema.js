@@ -10,14 +10,24 @@ const productSchema=mongoose.Schema({
         type:String,
         required:true,
     },
-    // brand:{
+    
+    // category:{
     //     type:String,
     //     required:true,
     // },
     category:{
-        type:String,
-        required:true,
-    },
+        categoryId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"category",
+        required:true
+        },
+        name:{
+            type:String,
+            required:true,
+        }
+
+        },
+   
     regularPrice:{
         type:Number,
         required:true
@@ -39,10 +49,7 @@ const productSchema=mongoose.Schema({
             type:Array,
            // required:true,
         },
-        // color:{
-        //     type:String,
-        //     required:true,
-        // },
+        
         isBlocked:{
             type:Boolean,
             default:false,

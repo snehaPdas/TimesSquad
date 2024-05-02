@@ -82,6 +82,20 @@
                     </a>
                   
                 </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/coupon"> <i class="icon material-icons md-class"></i>
+                        <span class="text">Coupon</span> </a>
+                </li>
+                   
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/offer"> <i class="icon material-icons md-description"></i>
+                        <span class="text">Offer</span> </a>
+                </li>
+
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/salesReport"> <i class="icon material-icons md-description"></i>
+                        <span class="text">Sales Report</span> </a>
+                </li>
              
             </ul>
             <hr>
@@ -140,6 +154,7 @@
                 margin-top: 5px;
                 font-size: 14px; /* Adjust font size as needed */
             }
+    
         </style>
         
 
@@ -222,11 +237,12 @@
                                                 <label class="form-label">Category</label>
                                                 <select class="form-select border" style="width: 150px;" name="category"      onclick="clrcategory()">
                                                     <div id="category-error" class="error-message"></div>
-                                                    <option value="<%= product.category %>" >
-                                                         <%= product.category %>
+                                                
+                                                    <option value="<%= product.category.name %>" >
+                                                        <%= product.category.name %>
                                                     </option>
                                                     <% for (let i = 0; i < cat.length; i++) { %>
-                                                        <% if (cat[i].isListed && cat[i].name!== product.category) { %>
+                                                        <% if (cat[i].isListed && cat[i].name!== product.category.name) { %>
                                                             <option value="<%= cat[i].name %>" >
                                                                 <%= cat[i].name %>
                                                             </option>
@@ -245,13 +261,13 @@
                                         <div id="addedImagesContainer" class="thumbnails-container">
                                             
                                                 <% for (let i=0; i < product.productImage.length; i++) { %>
-                                                    <div class="col-md-12 mb-4">
+                                                    <div class="col-md-2 mb-2">
                                                         <div class="row">
                                                             <div class="col-12">
                                                                 <img class="rounded" style="width: 50px; height: 60px;"
                                                                     src="/uploads/product-images/<%= product.productImage[i] %>"
                                                                     alt="image" data-filename="<%= product.productImage[i] %>">
-                                                                <span class="delete-icon"
+                                                                <span class="delete-icon" style="cursor: pointer;"
                                                                     onclick="deleteImage('<%= product._id %>', '<%= product.productImage[i] %>')">❌</span>
                                                             </div>
                                                         </div>
@@ -263,8 +279,8 @@
                                     <div class="card-body">
                                         <div class="input-upload">
                                             <img src="assets/imgs/theme/upload.svg" alt="">
-                                            <input class="form-control border" name="images" id="imageInput" type="file" multiple>
-                                                <div id="image-error" class="error-message"></div>
+                                             <input class="form-control border" name="images" id="imageInput" type="file" multiple> 
+                                                <!-- <div id="image-error" class="error-message"></div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -305,9 +321,9 @@
     
                 const addedImagesContainer = document.getElementById("addedImagesContainer");
     
-                addedImagesContainer.innerHTML = "";
+                // addedImagesContainer.innerHTML = "";
     
-                const files = event.target.files;
+                 const files = event.target.files;
     
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
@@ -324,7 +340,7 @@
                     img.src = URL.createObjectURL(file);
                     img.alt = "thumbnail";
     
-                    img.style.width = "50px";
+                    img.style.width = "60px";
                     img.style.height = "auto";
     
     
@@ -367,7 +383,7 @@
                 })
                     .then((response) => location.reload())
                     .then((data) => {
-                        // Handle success or error
+                        
                         if (data.success) {
                             removeImage(filename);
                     

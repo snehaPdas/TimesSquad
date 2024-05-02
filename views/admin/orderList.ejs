@@ -74,6 +74,22 @@
                         <span class="text">Add product</span>
                     </a>
                 </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/coupon"> <i class="icon material-icons md-class"></i>
+                        <span class="text">Coupon</span> </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/offer"> <i class="icon material-icons md-description"></i>
+                        <span class="text">Offer</span> </a>
+                </li>
+
+
+
+
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/salesReport"> <i class="icon material-icons md-description"></i>
+                        <span class="text">Sales Report</span> </a>
+                </li>
             </ul>
             <hr>
             <br>
@@ -168,12 +184,12 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>#ID</th>
+                        <!-- <th>#ID</th> -->
                         <th scope="col">Name</th>
                         <th scope="col">Phone</th>
                         <th scope="col">Total</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Date</th>
+                        <th scope="col">Date And Time</th>
                         <th scope="col" class="text-end"> Action </th>
                     </tr>
                 </thead>
@@ -183,15 +199,11 @@
                      <% for (let i = 0; i < orders.length; i++) { %>
                         
                         <tr>
-                            <td><%= orders[i]._id %></td>
+                            <!-- <td></td> -->
                             <td><b><%= orders[i].address[0].name %></b></td>
                             <td><%= orders[i].address[0].phone %></td>
-                            <td>
-                                <% for (let j = 0; j < orders[i].products.length; j++) { %>
-                                    <%= ((orders[i].products[j].product.salePrice)*(orders[i].products[j].quantity) )%><br>
-                                <% } %>
-                            </td>
-                        <td>
+                            <td> <%=orders[i].totalPrice %><br></td>
+                             <td>
                             <% if (orders[i].orderStatus == "canceled") { %>
                                 <span class="badge rounded-pill alert-danger"><%= orders[i].orderStatus %></span>
                                 <% } else if (orders[i].orderStatus == "pending") { %>
@@ -204,11 +216,14 @@
                                 <span class="badge rounded-pill alert-success"><%= orders[i].orderStatus %></span>
                             <% }else if (orders[i].orderStatus == "Returned") { %>
                                 <span class="badge rounded-pill alert-warning"><%= orders[i].orderStatus %></span>
+                             <% }else if (orders[i].orderStatus == "failed") { %>
+                                    <span class="badge rounded-pill alert-warning"><%= orders[i].orderStatus %></span>
+
                             <% } %> 
                         </td>
                         
-                        <td> <% const dateOptions = { day: '2-digit', month: 'short', year: 'numeric' }; %>
-                            <%= new Date(orders[0].createdOn).toLocaleDateString('en-US', dateOptions) %></td>
+                        <td> 
+                            <%= (orders[i].createdOn)%></td>
                             
 
                         <td class="text-end">

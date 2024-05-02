@@ -139,6 +139,18 @@
               <span class="text">Add product</span>
             </a>
           </li>
+          <li class="menu-item">
+            <a class="menu-link" href="/admin/coupon"> <i class="icon material-icons md-class"></i>
+                <span class="text">Coupon</span> </a>
+        </li>
+        <li class="menu-item">
+          <a class="menu-link" href="/admin/offer"> <i class="icon material-icons md-description"></i>
+              <span class="text">Offer</span> </a>
+      </li>
+        <li class="menu-item">
+          <a class="menu-link" href="/admin/salesReport"> <i class="icon material-icons md-description"></i>
+              <span class="text">Sales Report</span> </a>
+      </li>
         </ul>
         <hr />
         <br />
@@ -452,7 +464,7 @@
             document.getElementsByName("regularPrice")[0].value;
           var salePrice = document.getElementsByName("salePrice")[0].value;
           var quantity = document.getElementsByName("quantity")[0].value;
-          // var color = document.getElementsByName('color')[0].value;
+          
           var category = document.getElementsByName("category")[0].value;
           var images = document.getElementById("imageInput");
 
@@ -538,9 +550,9 @@
             document.getElementById("quantity-error").innerHTML = "";
           }
 
-          alert(category);
+        
           if (category.trim() === "") {
-            alert("if ");
+            
             displayErrorMessage("category-error", "Category is required");
             isValid = false;
           }

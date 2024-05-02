@@ -18,12 +18,16 @@ const cartSchema=mongoose.Schema({
 
     },
     price:{
-        type:Number,
-        default:0,
-        required:true
+     type:Number,
+     default:0,
+     required:true
 
     }
 }],
+coupon:{
+type:String,
+default:null,
+},
 
 totalQuantity:{
     type:Number,
@@ -35,6 +39,7 @@ totalPrice:{
    required:true
 }
 },
+
 {
 
 timestamps:true

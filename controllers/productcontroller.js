@@ -16,65 +16,61 @@ const getProductadd = async (req, res) => {
 const addProducts = async (req, res, err) => {
   try {
     const products = req.body;
+    const category=await Category.findOne({name : products.category})
     const productExists = await Product.findOne({
-      productName: { $regex: new RegExp(products.productName, "i") },
+       productName: { $regex: new RegExp(products.productName, "i") },
+      
     });
     
     if (!productExists) {
       const images = [];
       
-      // if (req.files && req.files.length>0) {
-      //   for (let i = 0; i < req.files.length; i++) {
-      //     images.push(req.files[i].filename);
-      //   }
-      // }
-
-
-      if(req.files && req.files.length>0){
-        for(let i=0;i<req.files.length;i++){
-          const file=req.files[i]
-          const croppedFilename=`cropped_${file.filename}`
+       if (req.files && req.files.length > 0) {
+        for (let i = 0; i < req.files.length; i++) {
+          const file = req.files[i];
+          const croppedFilename = `cropped_${file.filename}`;
           const inputPath = file.path;
           const outputPath = path.join(
             __dirname,
             "../public/uploads/product-images",
             croppedFilename
           );
-          console.log(inputPath);
-          console.log(outputPath);
-          await cropAndReplaceOriginal(inputPath, outputPath);
-          images.push(croppedFilename);
-
+      
+          const success = await cropAndReplaceOriginal(inputPath, outputPath);
+          if (success) {
+            images.push(croppedFilename);
+          } else {
+            console.log(`Failed to crop ${file.filename}.`);
+          }
         }
       }
-      
-
-
-      
+     
       const newProduct = new Product({
         // id: Date.now(),
         productName: products.productName,
         description: products.description,
-        category: products.category,
+        category: {
+                 categoryId:category._id,
+                 name:products.category
+                  },
         regularPrice: products.regularPrice,
         salePrice: products.salePrice,
         createdOn: new Date(),
         quantity: products.quantity,
-        //color: products.color,
         productImage: images,
       });
       
       await newProduct.save();
+    
+      
+    
      res.redirect("/admin/products");
-      // res.json("success")
     } else {
-      const category = await Category.find({});
-
-      //res.json("failed");
+      const category = await Category.find({isListed:true});
 
       res.render("admin/productadd", {
         catdata: category,
-        message: "product already exists",
+         message: "product already exists",
       });
     }
   } catch (error) {
@@ -82,42 +78,22 @@ const addProducts = async (req, res, err) => {
   }
 };
 
-const cropAndReplaceOriginal = (inputPath, outputPath) => {
-  return new Promise((resolve, reject) => {
-    sharp(inputPath)
-      .extract({ left: 200, top: 200, width: 200, height: 200 })
-      .toFile(outputPath, async (err, info) => {
-        if (err) {
-          console.error(err);
-          reject("Error cropping image");
-        } else {
-          try {
-            console.log("Original image deleted successfully");
-            resolve(outputPath);
-          } catch (error) {
-            console.error("Error deleting original image:", error);
-            reject("Error deleting original image");
-          }
+
+
+const cropAndReplaceOriginal = async (inputPath, outputPath) => {
+  try {
+   await sharp(inputPath)
+      .resize({width:650,height:650})
+    
+      .toFile(outputPath)
+      return true 
+    }catch{
+      console.error("Error occurred while cropping and replacing original:", error);
+      return false; 
+    }
+        
         }
-      });
-
-      setTimeout(()=>{
-        fs.promises.unlink(inputPath)
-      .then(() => {
-        console.log("Original image deleted successfully");
-      })
-      .catch((unlinkError) => {
-        console.error("Error deleting original image:", unlinkError);
-      });
-      },4000)
-  });
-};
-
-
-
-
-
-
+            
 
 const getAllProducts = async (req, res) => {
   try {
@@ -126,7 +102,7 @@ const getAllProducts = async (req, res) => {
     const limit = 4;
     const productData = await Product.find({
       productName: { $regex: new RegExp(".*" + search + ".*", "i") },
-    })
+    }).populate("category.categoryId")
       .sort({ createdOn: -1 })
       .limit(limit * 1)
       .skip((page - 1) * limit)
@@ -169,9 +145,10 @@ const getUnblockProduct = async (req, res) => {
 const getEditProduct = async (req, res) => {
   try {
     const id = req.query.id;
-    const products = await Product.findOne({ _id: id });
-    const category = await Category.find({});
     
+    const products = await Product.findOne({ _id: id }).populate("category");
+    
+    const category = await Category.find({});
     res.render("admin/productedit", { product: products, cat: category});
   } catch (error) {}
 };
@@ -180,33 +157,76 @@ const editProduct = async (req, res) => {
   try {
     const id = req.params.id;
     const data = req.body;
+    const category=await Category.findOne({name : data.category})
     const images = [];
+    // if (req.files && req.files.length > 0) {
+    //   for (let i = 0; i < req.files.length; i++) {
+    //     images.push(req.files[i].filename);
+    //   }
+    // }
+
+    const oldProduct = await Product.findById(id);
+    const oldImages = oldProduct.productImage;
+    
+
+
+
     if (req.files && req.files.length > 0) {
       for (let i = 0; i < req.files.length; i++) {
-        images.push(req.files[i].filename);
+        const file = req.files[i];
+        const croppedFilename = `cropped_${file.filename}`;
+        const inputPath = file.path;
+        const outputPath = path.join(
+          __dirname,
+          "../public/uploads/product-images",
+          croppedFilename
+        );
+    
+        const success = await EditcropAndReplaceOriginal(inputPath, outputPath);
+        if (success) {
+          images.push(croppedFilename);
+        } else {
+          console.log(`Failed to crop ${file.filename}.`);
+        }
       }
     }
+     
+     if (oldImages && oldImages.length > 0) {
+      images.push(...oldImages);
+    }
+
     if (req.files.length > 0) {
       const updatedProduct = await Product.findByIdAndUpdate(id, {
         productName: data.productName,
         description: data.description,
-        category: data.category,
+        // category: data.category,
+
+        category: {
+          categoryId:category._id,
+          name:data.category
+           },
         regularPrice: data.regularPrice,
         salePrice: data.salePrice,
         quantity: data.quantity,
         //color:data.color,
         productImage: images,
       });
+      
       res.redirect("/admin/products");
     } else {
       const updatedProduct = await Product.findByIdAndUpdate(id, {
         productName: data.productName,
         description: data.description,
-        category: data.category,
+        // category: data.category,
+        category: {
+          categoryId:category._id,
+          name:data.category
+           },
+
         regularPrice: data.regularPrice,
         salePrice: data.salePrice,
         quantity: data.quantity,
-        //color:data.color,
+      
       });
       res.redirect("/admin/products");
     }
@@ -214,6 +234,25 @@ const editProduct = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
+
+const EditcropAndReplaceOriginal = async (inputPath, outputPath) => {
+  try {
+   await sharp(inputPath)
+      .resize({width:650,height:650})
+    
+      .toFile(outputPath)
+      return true 
+    }catch{
+      console.error("Error occurred while cropping and replacing original:", error);
+      return false; 
+    }
+        
+        }
+
+
+
 const deleteSingleImage = async (req, res) => {
   try {
     console.log("hi");
@@ -227,7 +266,7 @@ const deleteSingleImage = async (req, res) => {
     const imagePath = path.join("public", "uploads", "product-images", image);
     if (fs.existsSync(imagePath)) {
       await fs.unlinkSync(imagePath);
-      console.log(`Image ${image} deleted successfully`);
+      // console.log(`Image ${image} deleted successfully`);
       res.json({ success: true });
     } else {
       console.log(`Image ${image} not found`);

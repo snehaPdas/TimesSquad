@@ -7,6 +7,8 @@ const userController=require("../controllers/usercontroller")
 const cartController=require("../controllers/cartController")
 const userprofileController=require("../controllers/userprofilecontroller")
 const orderController=require("../controllers/orderController")
+const wishListController=require("../controllers/wishListController")
+const walletController=require("../controllers/walletController")
 
 
 const {isLogged}=require("../Helpers/middleware")
@@ -68,9 +70,32 @@ route.get("/checkoutdeleteAddress",isLogged,orderController.getCheckoutDeleteAdd
 route.post("/orderPlaced",isLogged,orderController.orderPlaced)
 route.get("/orderDetails", isLogged, orderController.getOrderDetailsPage)
 route.get("/cancelOrder",isLogged,orderController.cancelOrder)
+route.post("/return", isLogged, orderController.returnOrder)
+route.post("/verifyPayment", isLogged, orderController.verify)
+route.get("/orderFailedPage",isLogged,orderController.getOrderfailed)
 
 
+route.post("/orderFailure",isLogged,orderController.handleOrderFailure)
+route.post("/retryPayment",isLogged,orderController.retryPayment)
 
+// invoice
+route.get("/invoice",isLogged,orderController.getinvoice)
+route.get("/saveinvoice",orderController.invoicedownload)
+// route.get("/saveinvoice",isLogged,orderController.generatePdf)
+
+// coupon
+route.post("/applyCoupon",isLogged,userController.applyCoupon)
+route.delete("/deleteCoupon",isLogged,userController.removeCoupon)
+
+
+//wishlist
+route.get("/wishlist",isLogged,wishListController.getWishListPage)
+route.post("/addToWishlist",isLogged,wishListController.addToWishList)
+route.get("/deletewishlist",isLogged,wishListController.deleteWishList)
+
+// wallet
+route.post("/addMoney", isLogged, walletController.addMoneyToWallet)
+route.post("/verify-payment", isLogged, walletController.verify_payment)
 
 
 

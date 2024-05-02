@@ -1,9 +1,10 @@
 const mongoose=require("mongoose")
-
+const env = require('dotenv')
+env.config()
 
 const ConnectDB=async()=>{
     try{
-        await mongoose.connect("mongodb://127.0.0.1:27017/TimeSquad")
+        await mongoose.connect(process.env.MONGO)
         
         console.log("DataBase conneted")
     }catch(error){

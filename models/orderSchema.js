@@ -57,13 +57,21 @@ const orderSchema = mongoose.Schema({
         ],
         default: 'pending',
     },
+   cancellationReason:{
+   type:String,
+  },
+
     createdOn : {
-        type : Date,
+       type:String
     
     },
     date : {
+        
         type : String,
-    }
+    },
+    deliveryDate:{
+        type:String,
+    },
     
 }, 
 { timestamps: true }

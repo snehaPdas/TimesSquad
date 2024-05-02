@@ -62,31 +62,14 @@ const addCategory=async(req,res)=>{
     }
 }
 
-// const getAllCategory=async (req,res)=>{
-//     try {
-//         const page=req.query.page||1
-//         const Limit=2
-//         const CategoryData=await Category.find({})
-//             .limit(Limit)
-//             .skip((page-1)*Limit)
-//             .exec()
-//             const count=await Category.countDocuments()
-//             const totalPages=Math.ceil(count/Limit)
-
-
-//         res.render("admin/category", { catdata: CategoryData,totalPages,currentPage:page })
-//     } catch (error) {
-//         console.log(error.message)
-//     }
-// }
 
 const getListedCategory=async(req,res)=>{
     try {
-        console.log("51")
+        
         let id=req.query.id
         const data=await Category.updateOne({_id:id},{$set:{isListed:false}})
         res.redirect('/admin/category')
-        console.log(data)
+    
 
     } catch (error) {
         console.log(error.message)
@@ -122,7 +105,7 @@ const editCategory = async (req, res) => {
             await Category.updateOne(
                 { _id: id },
                 {
-                    name: categoryName,
+                    name: categoryName,                     
                     description: description
                 })
             res.redirect("/admin/category")

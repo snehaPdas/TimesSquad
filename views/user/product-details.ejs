@@ -150,7 +150,7 @@
                                                         </span></ins>
                                             <ins><span class="old-price font-md ml-15">₹<%=
                                                         data.regularPrice.toLocaleString('en-IN') %></span></ins>
-                                            <span class="save-price  font-md color3 ml-15">25% Off</span>
+                                            <!-- <span class="save-price  font-md color3 ml-15">25% Off</span> -->
                                         </div>
                                     </div>
                                     <div class="bt-1 border-color-1 mt-15 mb-15"></div>
@@ -161,11 +161,15 @@
                                     </div>
                                     <div class="product_sort_info font-xs mb-30">
                                         <ul>
-                                            <li class="mb-10"><i class="fi-rs-crown mr-5"></i> 1 Year <%= data.brand %>
-                                                    Brand Warranty</li>
+                                            <!-- <li class="mb-10"><i class="fi-rs-crown mr-5"></i> 1 Year <%= data.brand %>
+                                                    Brand Warranty</li> -->
                                             <li class="mb-10"><i class="fi-rs-refresh mr-5"></i> 30 Day Return Policy
                                             </li>
                                             <li><i class="fi-rs-credit-card mr-5"></i> Cash on Delivery available</li>
+
+                                            <li class="mb-10"><i class="fi-rs-crown mr-5"></i><span style="font-weight: bold; color: red;">Availability:</span> <%= data.quantity %> left in stock!!</li>
+
+                                            
                                         </ul>
                                     </div>
 
@@ -257,15 +261,15 @@
                                                         </div>
                                                     </div>
                                                     <div class="product-content-wrap">
-                                                        <h2> <tabindex="0">Boss Watch
-                                                                Hea</h2>
+                                                        <h2> <tabindex="0"><%=prod[j].productName%>
+                                                                </h2>
                                                         <div class="rating-result" title="90%">
                                                             <span>
                                                             </span>
                                                         </div>
                                                         <div class="product-price">
-                                                            <span>23800 </span>
-                                                            <span class="old-price">24588</span>
+                                                            <span><%=prod[j].salePrice%> </span>
+                                                            <span class="old-price"><%=prod[j].regularPrice%></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -382,7 +386,7 @@
 <script>
     function addToCart(prodId) {
         var quantity = 1;
-       
+        
         $.ajax({
             url: `/addtoCart`,
             method: "post",
@@ -391,8 +395,9 @@
                 id:prodId
             },
             success: (res) => {
+                console.log(res,"res");
                 if (res.status === true) {
-                    // Show success message if the product is added to the cart
+                    
                     Swal.fire({
                         title: 'Added to Cart!',
                         text: 'Continue Shopping',

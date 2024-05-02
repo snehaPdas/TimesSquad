@@ -7,9 +7,8 @@ const User = require("../Models/userSchema");
 const getCartPage = async (req, res) => {
   try {
     const userId = req.session.user;
-    const userCart = await Cart.findOne({ user: userId }).populate(
-      "items.product"
-    );
+    const userCart = await Cart.findOne({ user: userId }).populate( "items.product")
+      
 
     if (userCart) {
       res.render("user/cart", { userCart });
@@ -22,12 +21,13 @@ const getCartPage = async (req, res) => {
   }
 };
 
-const addTocart = async (req, res) => {
+const   addTocart = async (req, res) => {
   try {
+    
     const productid = req.body.id;
     
-   const qty=req.body.quantity
-    console.log(req.body);
+   //const qty=req.body.quantity
+  
     const userId = req.session.user;
     const findUser = await User.findOne({ _id: userId });
     if (!findUser) {
@@ -38,7 +38,7 @@ const addTocart = async (req, res) => {
       return res.status(404).json({ message: "product not found" });
     }
     let userCart = await Cart.findOne({ user: userId });
-    console.log(userCart);
+    
     if (!userCart) {
       userCart = new Cart({ user: userId, items: [], price: 0 });
     }
@@ -47,26 +47,29 @@ const addTocart = async (req, res) => {
       (item) => item.product.toString() === productid
     );
   
-    let incomingQuantity = parseInt(qty);
-    console.log(incomingQuantity)
-        
+    let incomingQuantity = 1;
+    
+    let totalQuantityInCart;
+
     if (existingItemIndex >= 0) {
-      const totalQuantityInCart =
+      
+       totalQuantityInCart =
         userCart.items[existingItemIndex].quantity + incomingQuantity;
       if (totalQuantityInCart <= findproduct.quantity) {
+      
         //update the quantity
         userCart.items[existingItemIndex].quantity += incomingQuantity;
         userCart.items[existingItemIndex].price =
           findproduct.salePrice * userCart.items[existingItemIndex].quantity;
         //push the item into the cart
-      } else {
+      }  else {
         // Product is out of stock
         return res.status(200).json({
           status: "out of stock",
           message: "Product is out of stock.",
         });
       }
-    } else {
+    }   else {
       if (findproduct.quantity > 0) {
         userCart.items.push({
           product: productid,
@@ -86,7 +89,7 @@ const addTocart = async (req, res) => {
     userCart.totalQuantity = userCart.items.reduce(
       (total, item) => total + item.quantity,0);
     userCart.totalPrice = userCart.items.reduce((total, item) => total + item.price,0);
-    console.log("totalprice------------------", userCart.totalPrice)
+  
 
     await userCart.save();
     return res.status(200).json({
@@ -107,7 +110,7 @@ const changeQuantity = async (req, res) => {
     const action = req.body.action;
     const userId = req.session.user;
 
-    console.log("qua:", productId);
+    
 
     const userCart = await Cart.findOne({ user: userId }).populate("items.product");
     const cartItem = userCart.items.find((item) => item.product._id.toString() === productId);
@@ -118,13 +121,13 @@ const changeQuantity = async (req, res) => {
       return res.status(404).json({ message: "Product not found in the cart" });
     }
 
-    const actionValue = parseInt(action, 10);
+    const actionValue = parseInt(action);
 
     if (actionValue === 1) {
       if (cartItem.quantity < cartItem.product.quantity) {
 
         cartItem.quantity += 1;
-
+        cartItem.price =cartItem.quantity * cartItem.product.salePrice ;
         // return res.status(200).json({status:true, message: 'Quantity Updated' });
       } else {
 
@@ -133,8 +136,9 @@ const changeQuantity = async (req, res) => {
           .json({ status: false, message: "Quantity limit reached" });
       }
     } else if (actionValue === -1) {
-      if (cartItem.quantity > 1) {
+       if (cartItem.quantity > 1) {
         cartItem.quantity -= 1;
+        cartItem.price =cartItem.quantity * cartItem.product.salePrice ;
       } else {
         return res
           .status(400)
@@ -163,9 +167,7 @@ const calculateTotalQuantity = (cartItems) => {
 };
 const calculateTotalPrice = (cartItems) => {
   return cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
+    (total, item) => total + item.product.salePrice * item.quantity,0);
 };
 
 
@@ -193,7 +195,7 @@ const deleteProduct = async (req, res) => {
 
     userCar.totalQuantity -= removedItem.quantity;
     userCar.totalPrice -= removedItem.price 
-    // * removedItem.quantity;
+     //removedItem.quantity;
     await userCar.save();
 
     res.redirect("/cart");

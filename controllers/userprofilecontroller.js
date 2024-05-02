@@ -2,6 +2,17 @@ const User = require("../Models/userSchema");
 const Product = require("../Models/productSchema");
 const Address = require("../Models/addressSchema");
 const Order = require("../Models/orderSchema");
+const bcrypt = require("bcrypt");
+
+const passwordsecure = async (password) => {
+  try {
+    const passwordHash = await bcrypt.hash(password, 10);
+    return passwordHash;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 
 const getUserProfile = async (req, res) => {
   try {
@@ -162,7 +173,7 @@ const editUserDetails = async (req, res) => {
         $set: {
           name: data.name,
           phone: data.phone,
-          // email: data.email,
+          password:await passwordsecure(data.password)
         },
       }
     ).then((data) => console.log(data));

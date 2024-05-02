@@ -2,14 +2,14 @@ const nodemailer=require("nodemailer")
 const transporter=nodemailer.createTransport({
     service:"gmail",
     auth:{
-          user:"snehap7das@gmail.com",
-          pass: "txbq sgdu bxjh qhpm"
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASSWORD
     }
 })
 
 const sendEmail=async(email,otp)=>{
     const mailOptions={
-        from:"snehap7das@gmail.com",
+        from:process.env.EMAIL_USER,
         to:email,
         subject:"Email verification",
         text:`your otp for verification is:${otp}`

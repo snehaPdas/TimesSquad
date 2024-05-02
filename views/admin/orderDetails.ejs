@@ -74,6 +74,20 @@
                         <span class="text">Add product</span>
                     </a>
                 </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/coupon"> <i class="icon material-icons md-class"></i>
+                        <span class="text">Coupon</span> </a>
+                </li>
+
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/offer"> <i class="icon material-icons md-description"></i>
+                        <span class="text">Offer</span> </a>
+                </li>
+
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/salesReport"> <i class="icon material-icons md-description"></i>
+                        <span class="text">Sales Report</span> </a>
+                </li>
             </ul>
             <hr>
             <br>
@@ -172,6 +186,9 @@
                                     </div>
                             <% } else if (orders.orderStatus === "Returned") { %>
                                 <h4 class="text-warning">Returned</h4>
+                                <% } else if (orders.orderStatus === "failed") { %>
+                                    <h4 class="text-warning">Failed</h4>
+
                             <% } else { %>
                                 <select id="actionDropdown" class="form-select form-select-sm d-inline-block mb-lg-0 mb-15 mw-100" onchange="handleDropdownChange(this,'<%= orders._id %>')">
                                     <option value="status">Status</option>
@@ -217,7 +234,7 @@
                                 <p class="mb-1">
                                     <%if(locals.orders){%>
                                     Pay method: <%=orders.payment%> <br> Status:
-                                    <%if(orders.orderStatus=="Pending"){%> 
+                                    <%if(orders.orderStatus=="pending"){%> 
                                         Pending
                                             <%}else if(orders.orderStatus=="Delivered"){%>
                                                 Delivered
@@ -229,7 +246,9 @@
                                                         Cancelled
                                                         <%}else if(orders.orderStatus=="Shipped"){%>
                                                             Shipped
-                                                            <%}%>
+                                                            <%} else if(orders.orderStatus=="failed"){%>
+                                                                failed
+                                                                <%}%>
                                                 <%}%>
                                             </p>
                                            </div>

@@ -19,6 +19,7 @@
     <link href="/admin-assets/css/main.css" rel="stylesheet" type="text/css" />
    <!-- Include SweetAlert CSS and JS files from CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
+<script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
 
 </head>
 
@@ -81,6 +82,21 @@
                         <span class="text">Add product</span>
                     </a>
                   
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/coupon"> <i class="icon material-icons md-class"></i>
+                        <span class="text">Coupon</span> </a>
+                </li>
+
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/offer"> <i class="icon material-icons md-description"></i>
+                        <span class="text">Offer</span> </a>
+                </li>
+
+
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/salesReport"> <i class="icon material-icons md-description"></i>
+                        <span class="text">Sales Report</span> </a>
                 </li>
              
             </ul>
@@ -145,13 +161,19 @@
                 </div> -->
             </div>
             <div class="row">
-                <div class="col-lg-3">
+                <div class="col-lg-4">
                     <div class="card card-body mb-4">
                         <article class="icontext">
                             <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
                             <div class="text">
                                 <h6 class="mb-1 card-title">Revenue</h6>
-                                <span>$13,456.5</span>
+                                <% let totalRevenue=0; %>
+                                <% for (let i=0; i < salesdetails.length; i++) { %>
+                                    <% totalRevenue +=salesdetails[i].totalPrice; %>
+                                      <% } %>
+                                      <span id="totalRevenue" style="font-size: 18px;">
+                                        ₹ <%= totalRevenue %>
+                                      </span>
                                 <span class="text-sm">
                                     Shipping fees are not included
                                 </span>
@@ -159,12 +181,12 @@
                         </article>
                     </div>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-4">
                     <div class="card card-body mb-4">
                         <article class="icontext">
                             <span class="icon icon-sm rounded-circle bg-success-light"><i class="text-success material-icons md-local_shipping"></i></span>
                             <div class="text">
-                                <h6 class="mb-1 card-title">Orders</h6> <span>53.668</span>
+                                <h6 class="mb-1 card-title">Orders</h6> <span><%=totalOrders%></span>
                                 <span class="text-sm">
                                     Excluding orders in transit
                                 </span>
@@ -172,22 +194,22 @@
                         </article>
                     </div>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-4">
                     <div class="card card-body mb-4">
                         <article class="icontext">
                             <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-qr_code"></i></span>
                             <div class="text">
-                                <h6 class="mb-1 card-title">Products</h6> <span>9.856</span>
+                                <h6 class="mb-1 card-title">Products</h6> <span><%=totalProducts%></span>
                                 <span class="text-sm">
-                                    In 19 Categories
+                                    In <%=totalCategories%> Categories
                                 </span>
                             </div>
                         </article>
                     </div>
                 </div>
-                <div class="col-lg-3">
-                    <div class="card card-body mb-4">
-                        <article class="icontext">
+                <!-- <div class="col-lg-3"> -->
+                    <!-- <div class="card card-body mb-4"> -->
+                        <!-- <article class="icontext">
                             <span class="icon icon-sm rounded-circle bg-info-light"><i class="text-info material-icons md-shopping_basket"></i></span>
                             <div class="text">
                                 <h6 class="mb-1 card-title">Monthly Earning</h6> <span>$6,982</span>
@@ -195,30 +217,277 @@
                                     Based in your local time.
                                 </span>
                             </div>
+                        </article> -->
+                    <!-- </div> -->
+                <!-- </div> -->
+            <!-- </div> -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <article class="card-body">
+                            <h5 class="card-title">Monthly Sale statistics</h5>
+                            <canvas id="monthlyChart" height="120px"></canvas>
                         </article>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-xl-11 col-lg-12">
-                    <div class="card mb-4">
-                        <article class="card-body">
-                            <h5 class="card-title">Sale statistics</h5>
-                            <canvas id="myChart" height="120px"></canvas>
-                        </article>
-                    </div>
-                    <div class="row">
+                <div class="col-lg-4">
+                  <div class="card mb-4">
+                    <article class="card-body">
+                      <h5 class="card-title">Order Statuses</h5>
+                      <input type="hidden" id="orderStatus">
+                      <canvas id="myChart3" height="217"></canvas>
+                    </article>
+                  </div>
+                </div>
+              <!-- </div> -->
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card mb-4">
+                          <article class="card-body">
+                            <h5 class="card-title">Daily Sales Statistics</h5>
+                            <canvas id="dailyChart" height="120px"></canvas>
+                          </article>
+                        </div>
+                      </div>
                         
                     </div>
                 </div>
                
             </div>
+
+            <!-- <div class="col-lg-4">
+                <div class="card mb-4">
+                  <article class="icontext">
+                    <div class="p-3">
+                      <h3 class="mb-4 card-title text-center">Best Selling Categories</h3> 
+                      
+                        <div class="category-item mb-2 text-center"> 
+                        
+                        </div>
+                        
+                    </div>
+                  </article>
+                </div>
+              </div>
+            </div> -->
+            <br><br>
+            <div>
+                <h2 class="text-center mb-4">Top Selling Products</h2>
+                <table class="table" id="bestSellingProducts">
+                  <thead>
+                    <tr>
+                      <th class="text-center">Serial No</th>
+                      <th class="text-center">Product Name</th>
+                      <th class="text-center">Total Quantity</th>
+                    </tr>
+                  </thead>
+                  <tbody> 
+                      <%  const sortedProducts=productsData.sort((a, b)=> {
+                        const quantityA = topSellingProducts.find(product => product._id.toString() ===a._id.toString())?.totalQuantity || 0;
+                        const quantityB = topSellingProducts.find(product => product._id.toString() ===b._id.toString())?.totalQuantity || 0;
+                        return quantityB - quantityA;
+                        });%>
+                        <% let serialNumber = 1; %>
+                         
+                    <%    sortedProducts.forEach(product => { %>
+                            <tr>
+                              <td class="text-center">
+                                <%= serialNumber %>
+                                  </td>
+                              <td class="text-center" style="vertical-align: middle; ">
+                                <%= product.productName %>
+                              </td>
+                              <td class="text-center"  style="vertical-align: middle; ">
+                                <%= topSellingProducts.find(topProduct=> topProduct._id.toString() === product._id.toString())?.totalQuantity || 0 %>
+                              </td>
+                            </tr>
+                            <% serialNumber++ %>
+                            <% }) %>
+                        </tbody>
+                      </table>
+                    </div>
+                     
+                      
+                   
+
+
+
            
         </section> <!-- content-main end// -->
+        <script>
+            window.onload = function () {
+            fetch('/admin/showChart', {
+                method: 'post',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ msg: "hi" })
+            }).then(response => response.json())
+                .then(data => {
+                    console.log(data, "this is the data");
+                    chart(data.monthlySalesData, data.dailySalesData);
+                    pieChart(data.eachOrderStatusCount);
+                
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+        
+          </script>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+            <script>
+
+   function chart(monthlySalesData, dailySalesData) {
+     
+      // Fill in missing months with zero values
+      const allMonths = Array.from({ length: 12 }, (_, i) => i + 1); // Array representing all months (1 to 12)
+      const monthlyDataMap = new Map(monthlySalesData.map(item => [item._id, item.totalAmount]));
+      const monthlyDataFilled = allMonths.map(month => ({ _id: month, totalAmount: monthlyDataMap.get(month) || 0 }));
+    console.log(allMonths,monthlyDataMap,monthlyDataFilled,"this is the data from chart");
+      // Monthly sales chart
+        var monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+        var monthlyChart = new Chart(monthlyCtx,  {
+          type: 'bar',
+          data: {
+            labels: monthlyDataFilled.map(item => item._id),
+            datasets: [{
+              label: 'Monthly Sales',
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 159, 64, 0.7)'
+              ],
+              borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+              ],
+              data: monthlyDataFilled.map(item => item.totalAmount)
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                labels: {
+                  usePointStyle: true,
+                },
+              }
+            }
+          }
+        });
+      
+
+
+        // Daily sales chart
+        if ($('#dailyChart').length) {
+        var dailyCtx = document.getElementById('dailyChart').getContext('2d');
+        var dailyChart = new Chart(dailyCtx, {
+          type: 'line',
+          data: {
+            labels: dailySalesData.map(item => item._id),
+            datasets: [{
+              label: 'Daily Sales',
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 159, 64, 0.7)'
+              ],
+              borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+              ],
+              data: dailySalesData.map(item => item.totalAmount)
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                labels: {
+                  usePointStyle: true,
+                },
+              }
+            }
+          }
+        });
+      }
+    
+    }
+
+
+    function pieChart(eachOrderStatusCount) {
+    
+        
+  
+      if ($('#myChart3').length) {
+        
+        var statusLabels = Object.keys(eachOrderStatusCount);
+        var statusData = Object.values(eachOrderStatusCount);
+
+        var ctx = document.getElementById('myChart3').getContext('2d');
+        var myChart3 = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: statusLabels,
+            datasets: [{
+              data: statusData,
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 159, 64, 0.7)'
+              ],
+              borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'right'
+              }
+            }
+          }
+        });
+      }
+    }
+
+            </script>
+        
         
 
+        
+
+                
+        
+<!-- /............................................... -->
     </main>
-    <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+    
     <script src="admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="admin-assets/js/vendors/select2.min.js"></script>
     <script src="admin-assets/js/vendors/perfect-scrollbar.js"></script>

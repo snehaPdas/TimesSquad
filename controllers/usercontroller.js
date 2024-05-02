@@ -3,32 +3,47 @@ const User = require("../Models/userSchema");
 const authcontroller = require("../Helpers/authcontroller");
 const Product = require("../Models/productSchema");
 const Category=require("../Models/categorySchema")
+const Coupon=require("../Models/couponSchema")
+const Cart=require("../Models/cartSchema")
+const Offer=require("../Models/offerSchema")
 
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 
-
+// ...............................................................................................
 //get home page
 const GetHomepage = async (req, res) => {
   try {
     const user = req.session.user;
     const userData = await User.findOne({});
-    const productData = await Product.find({ isBlocked: false })
-      .sort({ id: -1 })
-      .limit(8);
+    const offer=await Offer.find({})
+    
+    const UnListedCategory=await Category.find({isListed:false})
+    const productData = await Product.find({ isBlocked: false,
+      "category.categoryId":{$nin:UnListedCategory.map(cat=>cat._id)}
+    
+    }).populate({
+      path:"category",
+      match:{isListed:true},
+      select:"name"
+    }).sort({ id: -1 }).limit(8);
+     
+  
+    
 
     if (user) {
       if (req.url === "/") {
-        res.render("user/homepage", { user: userData, products: productData });
+        res.render("user/homepage", { user: userData, products: productData,offer });
       }
     } else {
-      res.render("user/homepage", { products: productData });
+      res.render("user/homepage", { products: productData,offer });
     }
   } catch (error) {
     res.status(500).send("server error");
     console.log(error.message);
   }
 };
+// .........................................................................................................
 
 //password bcrypt
 
@@ -40,6 +55,7 @@ const passwordsecure = async (password) => {
     console.log(error.message);
   }
 };
+// .........................................................................................................
 
 //for load signup page
 
@@ -51,6 +67,7 @@ const GetSignup = (req, res) => {
     console.log(error.message);
   }
 };
+// ............................................................................................................
 
 //inserting user
 
@@ -73,7 +90,7 @@ let insertuser = async (req, res) => {
       });
     }
 
-
+// ................................................................................
     const otp = Math.floor(100000 + Math.random() * 900000);
     req.session.otp = otp;
     await authcontroller.sendEmail(req.session.userData.email, req.session.otp);
@@ -82,6 +99,7 @@ let insertuser = async (req, res) => {
     console.error(error);
   }
 };
+// .......................................................................................................
 //for getting otppage
 const GetOtppage = async (req, res) => {
   try {
@@ -90,6 +108,7 @@ const GetOtppage = async (req, res) => {
     console.log(error.message);
   }
 };
+// .............................................................................................
 
 //otp verification
 const verifyOtp = async (req, res) => {
@@ -119,6 +138,7 @@ const verifyOtp = async (req, res) => {
     console.log(error.message);
   }
 };
+// .................................................................................................
 
 const resendOtp = async (req, res) => {
   try {
@@ -133,13 +153,14 @@ const resendOtp = async (req, res) => {
       secure: false,
       requireTLS: true,
       auth: {
-        user: "snehap7das@gmail.com",
-        pass: "txbq sgdu bxjh qhpm",
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
       },
     });
+    // .......................................................
 
     const info = await transporter.sendMail({
-      from: "snehap7das@gmail.com",
+      from: process.env.EMAIL_USER,
       to: email,
       subject: "Resend OTP ",
       text: `Your new OTP is ${newOtp}`,
@@ -159,6 +180,7 @@ const resendOtp = async (req, res) => {
     res.json({ success: false, message: "Error in resending OTP" });
   }
 };
+// .....................................................................................................................
 
 //for getting login
 const GetLogin = async (req, res) => {
@@ -179,6 +201,8 @@ const GetLogin = async (req, res) => {
   }
 };
 
+// ....................................................................................................
+
 //login user
 const userLogin = async (req, res) => {
   try {
@@ -193,7 +217,7 @@ const userLogin = async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, findUser.password);
         if (passwordMatch) {
           req.session.user = findUser._id;
-          console.log("Logged in");
+          console.log("Logged in",req.session.user);
           res.redirect("/");
         } else {
           console.log("password is not matching");
@@ -213,6 +237,7 @@ const userLogin = async (req, res) => {
     res.render("user/login", { message: "Login failed" });
   }
 };
+// ............................................................................................
 
 const getLogoutUser = async (req, res) => {
   try {
@@ -222,12 +247,12 @@ const getLogoutUser = async (req, res) => {
     console.log(error.message);
   }
 };
-
+// ...........................................................................................
 const getProductDetailsPage = async (req, res) => {
   try {
     const user = req.session.user;
-    console.log("100");
     const id = req.query.id;
+    
     const findProduct = await Product.findOne({ _id: id });
     const allProducts = await Product.find({ isBlocked: false })
       .sort({ id: -1 })
@@ -249,15 +274,21 @@ const getProductDetailsPage = async (req, res) => {
     console.log(error.message);
   }
 };
+// ..........................................................................................................
 
 const getShopPage = async (req, res) => {
   try {
     const user = req.session.id;
-    const products = await Product.find({ isBlocked: false });
-    const count = await Product.find({ isBlocked: false }).count();
-    // const brands = await Brand.find({})
+    const UnListedCategory=await Category.find({isListed:false})
+    const products = await Product.find({ isBlocked: false,
+    "category.categoryId":{$nin:UnListedCategory.map(cat=>cat._id)}
+  }).populate({
+    path:"category",
+    match:{isListed:true},
+    select:"name"
+  })
+    const count = products.length
     const categories = await Category.find({ isListed: true })
-
     let itemsPerPage = 9;
     let currentPage = parseInt(req.query.page) || 1;
     let startIndex = (currentPage - 1) * itemsPerPage;
@@ -269,7 +300,6 @@ const getShopPage = async (req, res) => {
       user: user,
       product: currentProduct,
        category: categories,
-      // brand: brands,
       count: count,
       totalPages,
       currentPage,
@@ -278,6 +308,7 @@ const getShopPage = async (req, res) => {
     console.log(error.message);
   }
 };
+// ........................................................................................................
 
 const searchProducts = async (req, res) => {
   try {
@@ -306,7 +337,6 @@ const searchProducts = async (req, res) => {
       user: user,
       product: currentProduct,
       category: categories,
-      //brand: brands,
       totalPages,
       currentPage,
     });
@@ -315,6 +345,7 @@ const searchProducts = async (req, res) => {
   }
 };
 
+// ......................................................................................................
 const filterByPrice = async (req, res) => {
   try {
     const user = req.session.user;
@@ -335,8 +366,6 @@ const filterByPrice = async (req, res) => {
     let endIndex = startIndex + itemsPerPage;
     let totalPages = Math.ceil(findProducts.length / itemsPerPage);
     const currentProduct = findProducts.slice(startIndex, endIndex);
-
-
     res.render("User/shop", {
     user: user, 
       product: currentProduct,
@@ -349,6 +378,7 @@ const filterByPrice = async (req, res) => {
   }
 };
 
+// ........................................................................................................
 const filterByAlphabet = async (req, res) => {
   try {
     const user = req.session.user;
@@ -381,24 +411,34 @@ const findProducts = await Product.find({isBlocked:false
   }
 };
 
-
+// ...............................................categorywise....................................................................
 
 
 const filterProduct = async (req, res) => {
   try {
       const user = req.session.user;
+      const UnListedCategory=await Category.find({isListed:false})
       const category = req.query.category;
-      const brand = req.query.brand;
-      const findCategory = category ? await Category.findOne({ _id: category }) : null;
+    
+      const findCategory = category ? await Category.findOne({ _id:category }) : null;
+         
+    
+      
 
-      const query = {
-          isBlocked: false,
-      };
 
-      if (findCategory) {
-          query.category = findCategory.name;
-      }
-      const findProducts = await Product.find(query);
+
+      const findProducts = await Product.find({ isBlocked: false,
+        $and:[{"category.categoryId":{$nin:UnListedCategory.map(cat=>cat._id)}},{"category.categoryId":findCategory._id}]
+      }).populate({
+        path:"category",
+        match:{isListed:true},
+        select:"name"
+      })
+    
+
+      
+
+
       const categories = await Category.find({ isListed: true });
       let itemsPerPage = 9;
       let currentPage = parseInt(req.query.page) || 1;
@@ -415,7 +455,7 @@ const filterProduct = async (req, res) => {
           totalPages,
           currentPage,
           selectedCategory: category || null,
-          selectedBrand: brand || null,
+        
       });
 
   } catch (error) {
@@ -426,24 +466,34 @@ const filterProduct = async (req, res) => {
 
 
 
-
+// ..........................................................................................
 const sortProduct = async (req, res) => {
-  
-  try {
-    console.log("1")
+   try {
+    
       let option = req.body.option;
+      let category = req.body.category;
+      console.log("ppppp",category)
+
       let itemsPerPage = 9;
       let currentPage = parseInt(req.body.page) || 1;
       let startIndex = (currentPage - 1) * itemsPerPage;
       let endIndex = startIndex + itemsPerPage;
       let data;
+      let query
+
+      if (category) {
+        query["category.categoryId"] = category;
+      }
+     
 
       if (option === "highToLow") {
-        console.log("for check")
-          data = await Product.find({ isBlocked: false }).sort({ salePrice: -1 });
+        
+          // data = await Product.find({ isBlocked: false }).sort({ salePrice: -1 });
+          data = await Product.find(query).sort({ salePrice: -1 });
       } else if (option === "lowToHigh") {
-        console.log("just check")
-          data = await Product.find({ isBlocked: false }).sort({ salePrice: 1 });
+        
+          //data = await Product.find({ isBlocked: false }).sort({ salePrice: 1 });
+          data = await Product.find(query).sort({ salePrice: 1 });
       } else {
           throw new Error("Invalid selection");
       }
@@ -464,10 +514,65 @@ const sortProduct = async (req, res) => {
   }
 };
 
+// ......................................................................................................
 
+const applyCoupon =async(req,res)=>{
+  
+  try {
+    const userID=req.session.user
+    const selectedCoupon= await Coupon.findOne({code:req.body.coupon,isListed:true})
+    
+    if(!selectedCoupon){
+      console.log("there is no coupon found ")
+      res.json({noCoupon:true})
+    }else if(selectedCoupon.userId.includes(userID)){
 
+      console.log("the coupon has already used")
+      res.json({used:true})
+    }else{
+       const cart=await Cart.findOne({user:userID})
+      selectedCoupon.userId.push(userID)
+       const offerPrice=selectedCoupon.offerPrice
+       cart.totalPrice=cart.totalPrice-selectedCoupon.offerPrice
+      
+      // await cart.save()
+       await selectedCoupon.save()
+      const value=parseInt(req.body.total)-  (parseInt(req.body.total)* (parseInt(selectedCoupon.offerPrice)/100))
+      
+      res.json({value:value,offerPrice:parseInt(selectedCoupon.offerPrice)})
+      
 
+    }
+    
+  } catch (error) {
+    console.log(error)
+    
+  }
 
+}
+
+// .........................................................................................................
+
+const removeCoupon=async(req,res)=>{
+  
+  try {
+    const couponId=req.query.id
+  
+    const userID=req.session.user
+    const selectedCoupon=await Coupon.findOneAndUpdate({code:couponId},{$pull:{userId:userID}})
+  
+    if (!selectedCoupon) {
+      
+      res.json({status:false,message:"not found"})
+    }else{
+      res.json({status:true,message:"coupon removed"}) 
+    }
+
+    
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 
 
@@ -487,6 +592,8 @@ module.exports = {
   filterByPrice,
   sortProduct,
   filterProduct,
-  filterByAlphabet
+  filterByAlphabet,
+  applyCoupon,
+  removeCoupon
   
 };

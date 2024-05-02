@@ -184,14 +184,14 @@
                         const altPhone = document.getElementById('altPhone').value.trim();
                         
                         // Define regex patterns for each field
-                        const namePattern = /^[a-zA-Z]+$/; // Only letters
-                        const addressTypePattern = /^[a-zA-Z]+$/; // Only letters and spaces
-                        const cityPattern = /^[a-zA-Z]+$/; // Only letters and spaces
-                        const landMarkPattern = /^[a-zA-Z]+$/; // Only letters and spaces
-                        const statePattern = /^[a-zA-Z]+$/; // Only letters and spaces
-                        const pincodePattern = /^\d{6}$/; // Exactly 6 digits
-                        const phonePattern = /^\d{10}$/; // Exactly 10 digits
-                        const altPhonePattern = /^\d{10}$/; // Exactly 10 digits
+                        const namePattern = /^[a-zA-Z]+(?:\s[a-zA-Z]+)*(?:\s[a-zA-Z]+)?$/; 
+                        const addressTypePattern = /^[a-zA-Z]+(?:\s[a-zA-Z]+)*(?:\s[a-zA-Z]+)?$/; 
+                        const cityPattern = /^[a-zA-Z]+(?:\s[a-zA-Z]+)*(?:\s[a-zA-Z]+)?$/; 
+                        const landMarkPattern = /^[A-Za-z0-9]+(?:\s[A-Za-z0-9]+)*$/; 
+                        const statePattern = /^[a-zA-Z]+$/; 
+                        const pincodePattern = /^\d{6}$/; 
+                        const phonePattern = /^\d{10}$/; 
+                        const altPhonePattern = /^\d{10}$/; 
                         
                         // Validate each field
                         let isValid = true;

@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
 
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-frontend/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Jul 2023 10:04:24 GMT -->
 <head>
     <meta charset="utf-8">
     <title>Time Squad</title>
@@ -20,14 +18,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> <!-- Add jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
  <style>
-        /* Add your custom styles here */
         .oval-btn {
-            border-radius: 20px; /* Adjust the value as needed */
+            border-radius: 20px; 
         }
     </style>
 
@@ -64,20 +61,20 @@
                                     <div class="header-action-icon-2">
                                         <a href="/wishlist">
                                             <img class="svgInject" alt="Evara" src="/user-assets/imgs/theme/icons/icon-heart.svg">
-                                            <!-- <span class="pro-count blue">4</span> -->
+                                            
                                         </a>
                                     </div>
                                     <div class="header-action-icon-2">
                                         <a class="mini-cart-icon" href="/cart">
                                             <img alt="Evara" src="/user-assets/imgs/theme/icons/icon-cart.svg">
-                                            <!-- <span class="pro-count blue">2</span> -->
+                                            
                                         </a>
                                         <% if (locals.user) { %>
-                                            <!-- Displayed when the user is logged in -->
+                                            
                                             <li class="dropdown nav-item">
                                               <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false">
-                                                <!-- Uncomment the following line if you want to use an icon -->
-                                                <!-- <i class="fas fa-/user-circle"></i> -->
+                                                
+                                                
                                                 <img class="svgInject" alt="Evara" src="/user-assets/imgs/theme/icons/user-profile.svg" style="height: 25px; width: 25px; margin-top: 2px;">
                                               </a>
                                               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
@@ -87,7 +84,7 @@
                                               </div>
                                             </li>
                                           <% } else { %>
-                                            <!-- Displayed when the user is not logged in -->
+                                            
                                             <div class="single-mobile-header-info ml-25 pr-5">
                                               <a href="/login">Login</a>
                                             </div>
@@ -147,10 +144,6 @@
                                                                 
                                                                     </a>
                                                                 </h5>
-                                                                <p class="font-xs">
-                                                                    <%= item.product.category %>
-                                                                        
-                                                                </p>
                                                             </td>
                                                             <td class="price" data-title="Price">₹<span> <text
                                                                 id="subTotal<%= item.product.id %>">
@@ -228,90 +221,40 @@
                 </section>
                </main>
 <!-- .................................................................footer...................................................... -->
-                <section class="section-padding footer-mid">
-                    <div class="container pt-15 pb-20">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-6">
-                                <div class="widget-about font-md mb-md-5 mb-lg-0">
-                                    <div class="logo logo-width-1 wow fadeIn animated">
-                                        <a href="index.html"><img src="/user-assets/imgs/theme/Logo.png" alt="logo"></a>
-                                    </div>
-                                    <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
-                                    <p class="wow fadeIn animated">
-                                        <strong>Address: </strong>562 Wellington Road, Street 32, San Francisco
-                                    </p>
-                                    <p class="wow fadeIn animated">
-                                        <strong>Phone: </strong>+01 2222 365 /(+91) 01 2345 6789
-                                    </p>
-                                    <p class="wow fadeIn animated">
-                                        <strong>Hours: </strong>10:00 - 18:00, Mon - Sat
-                                    </p>
-                                    <h5 class="mb-10 mt-30 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
-                                    <div class="mobile-social-icon wow fadeIn animated mb-sm-5 mb-md-0">
-                                        <a href="#"><img src="/user-assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                                        <a href="#"><img src="/user-assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                                        <a href="#"><img src="/user-assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
-                                        <a href="#"><img src="/user-assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
-                                        <a href="#"><img src="/user-assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-3">
-                                <h5 class="widget-title wow fadeIn animated">About</h5>
-                                <ul class="footer-list wow fadeIn animated mb-sm-5 mb-md-0">
-                                    <li><a href="#">About Us</a></li>
-                                    <li><a href="#">Delivery Information</a></li>
-                                    <li><a href="#">Privacy Policy</a></li>
-                                    <li><a href="#">Terms &amp; Conditions</a></li>
-                                    <li><a href="#">Contact Us</a></li>
-                                    <li><a href="#">Support Center</a></li>
-                                </ul>
-                            </div>
-                            <div class="col-lg-6  col-md-3">
-                                <h5 class="widget-title wow fadeIn animated">My Account</h5>
-                                <ul class="footer-list wow fadeIn animated">
-                                    <li><a href="#">Sign In</a></li>
-                                    <li><a href="#">View Cart</a></li>
-                                    <li><a href="#">My Wishlist</a></li>
-                                    <li><a href="#">Track My Order</a></li>
-                                    <li><a href="#">Help</a></li>
-                                    <li><a href="#">Order</a></li>
-                                </ul>
-                            
-                        </div>
+<section class="newsletter p-30 text-white wow fadeIn animated">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 mb-md-3 mb-lg-0">
+                <div class="row align-items-center">
+                    <div class="col flex-horizontal-center">
+                        
+                        <h4 class="font-size-20 mb-0 ml-3"></h4>
                     </div>
-                </section>
-                <div class="container pb-20 wow fadeIn animated">
+                    <div class="col my-4 my-md-0 des">
+                        <h5 class="font-size-15 ml-4 mb-0"> <strong></strong></h5>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+</section>
+<div class="container pb-20 wow fadeIn animated">
                     <div class="row">
                         <div class="col-12 mb-20">
                             <div class="footer-bottom"></div>
                         </div>
                         <div class="col-lg-6">
-                            <p class="float-md-left font-sm text-muted mb-0">&copy; 2022, <strong class="text-brand">Evara</strong> - HTML Ecommerce Template </p>
+                            <p class="float-md-left font-sm text-muted mb-0"><strong class="text-brand"></strong> </p>
                         </div>
                         <div class="col-lg-6">
                             <p class="text-lg-end text-start font-sm text-muted mb-0">
-                                Designed by <a href="http://alithemes.com/" target="_blank">Alithemes.com</a>. All rights reserved
+                                 <a href="http://alithemes.com/" target="_blank"></a>
                             </p>
                         </div>
                     </div>
                 </div>
                 </footer>
-                <!-- Preloader Start -->
-                <div id="preloader-active">
-                <div class="preloader d-flex align-items-center justify-content-center">
-                    <div class="preloader-inner position-relative">
-                        <div class="text-center">
-                            <h5 class="mb-10">Now Loading</h5>
-                            <div class="loader">
-                                <div class="bar bar1"></div>
-                                <div class="bar bar2"></div>
-                                <div class="bar bar3"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                </div>
 
 
 <!-- .....................................increment/decrement quantity................................ -->
@@ -334,29 +277,19 @@ async function changeQuantity(productId, action,event) {
              
             if (response.status) {
 
-        //  $(`#quantity-${productId}`).text(response.updatedCart.items[0].quantity);
         
-    
-    
-        // $(`#cartProductQuantity${productId}`).val(response.updatedCart.items[0].quantity);
-            
-
-        //        response.updatedCart.items.forEach(item => {
-        //         const subtotalElement = $(`#subTotal${item.product._id}`);
-        //         const newSubtotal = item.product.salePrice * item.quantity;
-        //         subtotalElement.text(newSubtotal);
 
         const updatedItem = response.updatedCart.items.find(item => item.product._id === productId);
             if (updatedItem) {
                 // Update quantity input field
                 $(`#cartProductQuantity${productId}`).val(updatedItem.quantity);
-                
-                // Update subtotal for the specific product
-                const subtotalElement = $(`#subTotal${productId}`);
-                const newSubtotal = updatedItem.product.salePrice * updatedItem.quantity;
+                response.updatedCart.items.forEach(item => {
+                const subtotalElement = $(`#subTotal${item.product._id}`);
+                const newSubtotal = item.product.salePrice * item.quantity;
                 subtotalElement.text(newSubtotal);
-            }
-
+            
+             })
+        
 
 
                $('#total').text(response.updatedCart.totalPrice);
@@ -374,7 +307,8 @@ async function changeQuantity(productId, action,event) {
                 icon: 'error'
             });
             }
-        } catch (error) {
+        }
+        }catch (error) {
             Swal.fire({
                 title: 'Error',
                 text: 'Quantity limit reached',
@@ -382,11 +316,8 @@ async function changeQuantity(productId, action,event) {
             });
         }
     }
+
 </script>
-
-
-
-
 
 
 
